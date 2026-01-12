@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: rgba(255, 255, 255, 0.92);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* fundo “único”, contínuo, sem faixas */
+  background:
+    radial-gradient(1400px 900px at 20% 12%, rgba(0, 122, 255, 0.20), transparent 58%),
+    radial-gradient(1200px 800px at 78% 18%, rgba(0, 122, 255, 0.13), transparent 62%),
+    radial-gradient(900px 700px at 55% 80%, rgba(0, 90, 220, 0.10), transparent 65%),
+    linear-gradient(180deg, #020811 0%, #030B16 45%, #020811 100%);
+  background-attachment: fixed;
+}
+
+/* seleção */
+::selection {
+  background: rgba(0, 122, 255, 0.35);
+}
+
+/* noise leve (opcional) */
+.noise::before {
+  content: "";
+  position: fixed;
+  inset: -40px; /* evita borda ao dar zoom */
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.065;
+  background-image: url('/placeholders/noise.png');
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  mix-blend-mode: overlay;
+  transform: translateZ(0);
+}
+
+/* garante que o conteúdo fique acima do noise */
+#__next {
+  position: relative;
+  z-index: 1;
+}
+
+/* linhas editoriais */
+.hr {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+}
+
+/* brilho sutil */
+.glow {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 16px 44px rgba(0, 0, 0, 0.42);
+}
+
+/* =========================
+   “Tudo em conjunto”
+   - remove qualquer fundo local que esteja criando blocos/“faixas”
+   - deixa seções transparentes por padrão
+   ========================= */
+
+section {
+  background: transparent !important;
+}
+
+/* se algum wrapper estiver pintando fundo, neutraliza */
+.bg-surface,
+.bg-panel,
+.bg-section {
+  background: transparent !important;
+}
+
+/* opcional: suaviza rolagem/overlays no iOS */
+body {
+  overscroll-behavior-y: none;
+}
