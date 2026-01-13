@@ -44,7 +44,6 @@ function buildWhatsAppMessage(kind: 'partner' | 'fast') {
   ].join('\n')
 }
 
-/** Botão “ghost” sem depender do componente Button (evita <a> aninhado) */
 function GhostAnchor({
   href,
   children,
@@ -102,7 +101,6 @@ function FloatingWhatsApp() {
 
 export function AppCTA() {
   const [idx, setIdx] = useState(0)
-
   const partnerHref = useMemo(() => waLink(buildWhatsAppMessage('partner')), [])
 
   useEffect(() => {
@@ -130,7 +128,7 @@ export function AppCTA() {
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_0.92fr]">
           {/* LEFT */}
           <Reveal>
-            <Badge>O app</Badge>
+            <Badge>BOAT NET APP</Badge>
 
             <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
               Baixe. Explore. Feche.
@@ -143,7 +141,6 @@ export function AppCTA() {
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'}>Baixar no App Store</Button>
-
               <GhostAnchor href={partnerHref} ariaLabel="Virar parceiro no WhatsApp (nova aba)">
                 Virar parceiro
               </GhostAnchor>
@@ -177,7 +174,6 @@ export function AppCTA() {
 
               <div className="relative overflow-hidden rounded-[44px] bg-black ring-1 ring-white/15 shadow-soft">
                 <div className="absolute left-1/2 top-3 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-black/80 ring-1 ring-white/10" />
-
                 <Image
                   src={shots[idx]}
                   alt="App screenshot"

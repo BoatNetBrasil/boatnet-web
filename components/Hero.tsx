@@ -7,12 +7,12 @@ import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
 
 const cards = [
-  { k: 'EXPERIÊNCIA', v: 'Padrão premium do início ao fim' },
-  { k: 'CURADORIA', v: 'Escolha mais rápida e segura' },
-  { k: 'RESERVAS', v: 'Status e detalhes organizados' },
-  { k: 'PAGAMENTOS', v: 'Proteção + comprovantes' },
-  { k: 'CONFIANÇA', v: 'Regras claras e parceiros verificados' },
-  { k: 'AVALIAÇÕES', v: 'Reputação real que orienta decisões' }
+  { k: 'EXPERIÊNCIA', v: 'Jornada premium, sem fricção' },
+  { k: 'CURADORIA', v: 'Seleção que economiza tempo' },
+  { k: 'RESERVAS', v: 'Clareza do início ao fim' },
+  { k: 'PAGAMENTOS', v: 'Segurança + comprovantes' },
+  { k: 'CONFIANÇA', v: 'Regras claras e suporte' },
+  { k: 'AVALIAÇÕES', v: 'Reputação que orienta escolhas' }
 ]
 
 export function Hero() {
@@ -32,7 +32,7 @@ export function Hero() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-blue/60 opacity-40" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-blue" />
                 </span>
-                SERVIÇOS • RESERVAS • SUPORTE 24H
+                CURADORIA • RESERVAS • AVALIAÇÕES
               </span>
             </Badge>
 
@@ -47,15 +47,15 @@ export function Hero() {
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              Serviços, marinas, experiências e compra e venda — com curadoria, reservas e avaliações.
-              No app, você acompanha tudo e conta com <span className="text-white/85 font-semibold">suporte humano 24h</span>.
-              Nosso objetivo é <span className="text-white/85 font-semibold">mudar o mundo da náutica</span>.
+              O site existe para apresentar o ecossistema e guiar a escolha com clareza. No app, você encontra serviços,
+              marinas, experiências e compra e venda — com curadoria, reservas e confiança. Nosso objetivo é{' '}
+              <span className="text-white/85 font-semibold">mudar o mundo da náutica</span>.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixar o app</Button>
-              <Button href="#verticals" variant="ghost">
-                Ver o ecossistema
+              <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixe o app</Button>
+              <Button href="#servicos" variant="ghost">
+                Explorar serviços
               </Button>
             </div>
 
@@ -96,7 +96,7 @@ export function Hero() {
               </motion.div>
 
               <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Pill>IOS-FIRST</Pill>
+                <Pill>IOS FIRST</Pill>
                 <Pill>PARCEIROS VERIFICADOS</Pill>
                 <Pill>PADRÃO PREMIUM</Pill>
               </div>
@@ -129,14 +129,28 @@ function WaveBackdrop() {
     <>
       <style jsx global>{`
         @keyframes bn-wave-x {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
         }
         @keyframes bn-shimmer {
-          0% { transform: translateX(-38%); opacity: 0; }
-          18% { opacity: 0.22; }
-          60% { opacity: 0.12; }
-          100% { transform: translateX(38%); opacity: 0; }
+          0% {
+            transform: translateX(-38%);
+            opacity: 0;
+          }
+          18% {
+            opacity: 0.22;
+          }
+          60% {
+            opacity: 0.12;
+          }
+          100% {
+            transform: translateX(38%);
+            opacity: 0;
+          }
         }
       `}</style>
 

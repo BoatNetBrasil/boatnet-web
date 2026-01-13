@@ -2,7 +2,7 @@ import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { Marquee } from '@/components/Marquee'
 import { AppCTA } from '@/components/AppCTA'
-import { Verticals } from '@/components/Verticals'
+import { Servicos } from '@/components/Servicos'
 import { HowItWorks } from '@/components/HowItWorks'
 import { Programs } from '@/components/Programs'
 import { LeadForm } from '@/components/LeadForm'
@@ -16,7 +16,7 @@ export default function Page() {
       <Hero />
       <Marquee />
       <AppCTA />
-      <Verticals />
+      <Servicos />
       <HowItWorks />
       <Programs />
       <LeadForm />

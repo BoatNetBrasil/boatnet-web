@@ -7,51 +7,51 @@ import { Waves, Ship, LifeBuoy, Store, Building2, Anchor } from 'lucide-react'
 const items = [
   {
     title: 'Passeios',
-    desc: 'Escolha, reserve e viva a experiência com clareza do início ao fim.',
+    desc: 'Do anúncio ao check-in: agenda, extras, regras claras e avaliação.',
     icon: Waves,
     meta: 'curadoria • agenda • experiência'
   },
   {
-    title: 'Aluguel day-use',
-    desc: 'Disponibilidade, regras e confirmação de forma simples e rápida.',
+    title: 'Aluguel Day-use',
+    desc: 'Barcos, lanchas, jetskis: disponibilidade, termos e depósito sem fricção.',
     icon: Ship,
-    meta: 'disponibilidade • regras • confirmação'
+    meta: 'disponibilidade • termos • depósito'
   },
   {
-    title: 'Compra e venda',
-    desc: 'Conecte oferta e demanda com contexto, confiança e intenção.',
+    title: 'Compra & Venda',
+    desc: 'Leads qualificados — sem bagunça. Chat, prova social e conversão.',
     icon: Store,
     meta: 'leads • confiança • conversão'
   },
   {
-    title: 'Serviços e documentos',
-    desc: 'Profissionais, manutenção e documentação em um só lugar.',
+    title: 'Serviços & Documentos',
+    desc: 'Marinheiro, mecânica, limpeza, despachante, laudos e mais.',
     icon: LifeBuoy,
-    meta: 'serviços • documentação • agendamento'
+    meta: 'serviços • compliance • agendamento'
   },
   {
     title: 'Marinas',
-    desc: 'Vagas, estrutura e relacionamento — com padrão e transparência.',
+    desc: 'Vagas, mensalidade, regras e relacionamento com o cliente.',
     icon: Building2,
-    meta: 'vagas • regras • recorrência'
+    meta: 'vagas • contrato • recorrência'
   },
   {
-    title: 'Eventos e experiências',
+    title: 'Eventos & Experiências',
     desc: 'Roteiros e ativações premium para aumentar ticket e recorrência.',
     icon: Anchor,
-    meta: 'experiência • premium • recorrência'
+    meta: 'experiência • upsell • recorrência'
   }
 ]
 
-export function Verticals() {
+export function Servicos() {
   return (
     <section id="servicos" className="py-16 sm:py-20">
       <Container>
         <Reveal>
           <SectionHeader
             kicker="Serviços"
-            title="Um ecossistema completo para a náutica."
-            subtitle="Descubra serviços, experiências e soluções — com curadoria, reservas e confiança em um só lugar."
+            title="Tudo que importa no náutico — por intenção"
+            subtitle="O site apresenta. O app resolve: curadoria, reservas, pagamentos e avaliações."
           />
         </Reveal>
 
@@ -90,7 +90,9 @@ function Card({
           <Icon className="h-5 w-5 text-brand-blue" aria-hidden="true" />
         </div>
 
-       
+        <a href="#o-app" className="text-xs font-semibold tracking-wide text-white/55 transition hover:text-white/80">
+          ver no app →
+        </a>
       </div>
 
       <div className="mt-4 text-lg font-semibold tracking-tight">{title}</div>

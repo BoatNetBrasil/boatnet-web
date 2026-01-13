@@ -6,52 +6,52 @@ import { ShieldCheck, Wallet, CalendarCheck, Star, TrendingUp, Headphones } from
 
 const items = [
   {
-    title: 'Onboarding guiado',
-    desc: 'Cadastro, verificação e publicação com fluxo simples e rápido.',
+    title: 'Onboarding Premium',
+    desc: 'Validação e configuração rápida. Sem ruído.',
     icon: CalendarCheck,
     meta: 'cadastro • verificação • setup'
   },
   {
-    title: 'Regras claras',
-    desc: 'Políticas objetivas para reservas, cancelamentos e conduta.',
+    title: 'Regras & Depósito',
+    desc: 'Termos claros, cancelamento e caução padronizada.',
     icon: ShieldCheck,
-    meta: 'políticas • transparência • segurança'
+    meta: 'políticas • proteção • consistência'
   },
   {
-    title: 'Pagamentos e repasses',
-    desc: 'Recebimentos organizados, histórico e acompanhamento do financeiro.',
+    title: 'Pagamentos & Repasse',
+    desc: 'Fluxo de pagamento no app + conciliação.',
     icon: Wallet,
-    meta: 'pagamentos • repasse • histórico'
+    meta: 'pagamento • repasse • conciliação'
   },
   {
     title: 'Avaliações',
-    desc: 'Reputação baseada em experiência real para gerar confiança.',
+    desc: 'Reputação para aumentar confiança e conversão.',
     icon: Star,
-    meta: 'avaliações • prova social • confiança'
+    meta: 'reviews • prova social • ranking'
   },
   {
     title: 'Performance',
-    desc: 'Visibilidade, leads melhores e indicadores para vender mais.',
+    desc: 'Leads melhores e tracking para otimizar receita.',
     icon: TrendingUp,
-    meta: 'métricas • conversão • crescimento'
+    meta: 'funil • métricas • conversão'
   },
   {
-    title: 'Ajuda',
-    desc: 'Suporte para dúvidas e orientação durante o uso da plataforma.',
+    title: 'Suporte',
+    desc: 'Atendimento com padrão e resolução rápida.',
     icon: Headphones,
-    meta: 'atendimento • orientações • suporte'
+    meta: 'suporte • operação • SLA'
   }
 ]
 
 export function Programs() {
   return (
-    <section id="parceiros" className="py-16 sm:py-20">
+    <section id="programas" className="py-16 sm:py-20">
       <Container>
         <Reveal>
           <SectionHeader
             kicker="Parceiros"
-            title="Parceria feita para escalar com organização."
-            subtitle="Ferramentas e padrão para anunciar melhor, receber com clareza e vender mais — com menos fricção."
+            title="Modelo de parceria que escala"
+            subtitle="Tudo que o parceiro precisa para operar com padrão, receber melhor e vender mais."
           />
         </Reveal>
 
