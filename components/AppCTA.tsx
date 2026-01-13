@@ -144,7 +144,6 @@ export function AppCTA() {
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'}>Baixar no App Store</Button>
 
-              {/* WhatsApp onboarding (nova aba) — sem quebrar a página atual */}
               <GhostAnchor href={partnerHref} ariaLabel="Virar parceiro no WhatsApp (nova aba)">
                 Virar parceiro
               </GhostAnchor>
@@ -157,7 +156,10 @@ export function AppCTA() {
                 {[
                   { k: 'Educar', v: 'explicar o padrão BoatNet' },
                   { k: 'Desejo', v: 'vitrine estilo revista' },
-                  { k: 'Converter', v: 'levar pro app' }
+                  { k: 'Converter', v: 'levar pro app' },
+                  { k: 'Confiança', v: 'dar contexto e segurança' },
+                  { k: 'Descoberta', v: 'filtros e categorias por intenção' },
+                  { k: 'Onboarding', v: 'atrair parceiros e marinas' }
                 ].map((x) => (
                   <div key={x.k} className="rounded-2xl bg-black/20 p-4 ring-1 ring-white/10">
                     <div className="text-xs font-semibold tracking-wide text-white/60">{x.k}</div>
