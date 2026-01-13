@@ -6,11 +6,11 @@ import { Button } from '@/components/Button'
 import { cn } from '@/lib/cn'
 
 const links = [
-  { href: '#o-app', label: 'O app' },
-  { href: '#verticals', label: 'Verticais' },
+
+  { href: '#verticals', label: 'Serviços' },
   { href: '#como-funciona', label: 'Como funciona' },
   { href: '#programas', label: 'Parceiros' },
-  { href: '#contato', label: 'Entrar' }
+
 ]
 
 export function Navbar() {
