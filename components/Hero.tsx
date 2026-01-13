@@ -55,7 +55,7 @@ export function Hero() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixar o app</Button>
               <Button href="#verticals" variant="ghost">
-                Ver o ecossistema
+                Explore nossos serviços
               </Button>
             </div>
 
