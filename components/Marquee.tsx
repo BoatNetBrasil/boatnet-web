@@ -10,7 +10,7 @@ const words = [
   'BOOKING',
   'PAGAMENTO',
   'REPASSE',
-  'REPUTAÇÃO',
+  'AVALIAÇÕES',
   'MARINAS',
   'SERVIÇOS',
   'COMPRA & VENDA',
