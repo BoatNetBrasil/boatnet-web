@@ -6,11 +6,17 @@ import { Button } from '@/components/Button'
 import { cn } from '@/lib/cn'
 
 const links = [
+<<<<<<< HEAD
 
   { href: '#serviços', label: 'Serviços' },
   { href: '#como-funciona', label: 'Como funciona' },
   { href: '#programas', label: 'Parceiros' },
 
+=======
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#passo-a-passo', label: 'Passo a passo' },
+  { href: '#parceiros', label: 'Parceiros' },
+>>>>>>> 8347100 (Update site copy, nav, hero, faq, partners form and footer)
 ]
 
 export function Navbar() {
@@ -50,10 +56,15 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'} variant="ghost" className="hidden sm:inline-flex">
-            Baixar o app
+          <Button
+            href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'}
+            variant="ghost"
+            className="hidden sm:inline-flex"
+          >
+            Baixe o app
           </Button>
-          <Button href="#contato">Virar parceiro</Button>
+
+          <Button href="#parceiros">Virar parceiro</Button>
         </div>
       </Container>
     </div>

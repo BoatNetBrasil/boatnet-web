@@ -15,8 +15,8 @@ function generateLeadId() {
 
 const TYPE_OPTIONS: { value: LeadType; label: string; hint: string }[] = [
   { value: 'parceiro', label: 'Parceiro', hint: 'passeios • aluguel • serviços' },
-  { value: 'marina', label: 'Marina', hint: 'vagas • mensalidade • serviços' },
-  { value: 'loja', label: 'Loja / Broker', hint: 'anúncios • leads • prova social' }
+  { value: 'marina', label: 'Marina', hint: 'vagas • estrutura • serviços' },
+  { value: 'loja', label: 'Loja / Broker', hint: 'anúncios • leads • visibilidade' }
 ]
 
 const NICHE_OPTIONS = [
@@ -125,25 +125,28 @@ export function LeadForm() {
     type === 'marina'
       ? 'Capacidade (vagas / serviços)'
       : type === 'loja'
-        ? 'Capacidade (estoque / anúncios)'
+        ? 'Capacidade (anúncios)'
         : 'Capacidade (frota / agenda)'
 
   const capacityPlaceholder =
     type === 'marina'
-      ? 'Ex.: 80 vagas + combustível + manutenção'
+      ? 'Ex.: 80 vagas + serviços'
       : type === 'loja'
         ? 'Ex.: 40 anúncios ativos'
         : 'Ex.: 6 embarcações + equipe'
 
   return (
-    <section id="contato" className="py-14 sm:py-16">
+    <section id="parceiros" className="py-14 sm:py-16">
       <Container>
         <Reveal>
-          <SectionHeader
-            kicker="Join"
-            title="Parceiros, marinas e lojas — entre na rede"
-            subtitle="Pré-cadastro limpo. A gente valida e libera o onboarding."
-          />
+          {/* centraliza title + subtitle */}
+          <div className="mx-auto max-w-3xl text-center">
+            <SectionHeader
+              kicker="Parceiros"
+              title="Entre para a rede BoatNet"
+              subtitle="Cadastre sua operação e receba contato para próximos passos. Simples, rápido e sem burocracia."
+            />
+          </div>
         </Reveal>
 
         <div className="mt-8">
@@ -185,9 +188,9 @@ export function LeadForm() {
                 </div>
 
                 <div className="rounded-2xl bg-black/20 px-4 py-3 ring-1 ring-white/10 lg:max-w-[390px]">
-                  <div className="text-xs font-semibold tracking-wide text-white/60">Segurança</div>
+                  <div className="text-xs font-semibold tracking-wide text-white/60">Privacidade</div>
                   <div className="mt-1 text-sm leading-relaxed text-white/70">
-                    Sem dados públicos. Acesso controlado e consistência em pagamentos.
+                    Seus dados não ficam expostos publicamente. Contato e acesso são controlados.
                   </div>
                 </div>
               </div>
@@ -202,18 +205,29 @@ export function LeadForm() {
                 <Field name="company" label="Empresa" placeholder="Nome fantasia" required />
                 <Field name="legalName" label="Razão social" placeholder="(opcional)" />
 
-                {/* CNPJ + Empresa em abertura (primeiro bloco da “parte empresa”) */}
+                {/* CNPJ + Empresa em abertura (abaixo, sem distorcer layout) */}
                 <div className="sm:col-span-2">
-                  <div className="grid gap-3 sm:grid-cols-[1.15fr_0.85fr]">
-                    <CNPJField required={!companyInSetup} disabled={companyInSetup} />
-                    <ToggleCard
-                      topLabel="Empresa"
-                      label="Empresa em abertura"
-                      helper="Deixa o CNPJ opcional."
-                      checked={companyInSetup}
-                      onToggle={() => setCompanyInSetup((v) => !v)}
-                    />
-                    <input type="hidden" name="companyInSetup" value={companyInSetup ? 'on' : ''} />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <CNPJField required={!companyInSetup} disabled={companyInSetup} />
+
+                      <div className="mt-3">
+                        <ToggleInline
+                          label="Empresa em abertura"
+                          helper="Se ainda não tem CNPJ, pode seguir."
+                          checked={companyInSetup}
+                          onToggle={() => setCompanyInSetup((v) => !v)}
+                        />
+                        <input type="hidden" name="companyInSetup" value={companyInSetup ? 'on' : ''} />
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl bg-black/20 px-4 py-3 ring-1 ring-white/10">
+                      <div className="text-xs font-semibold tracking-wide text-white/60">Validação</div>
+                      <div className="mt-1 text-sm leading-relaxed text-white/70">
+                        Usamos esses dados para organizar o contato e acelerar sua entrada na plataforma.
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -233,16 +247,16 @@ export function LeadForm() {
                 <div className="sm:col-span-2">
                   <details className="rounded-2xl bg-white/5 ring-1 ring-white/10">
                     <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-white/85">
-                      Informações da operação (opcional)
+                      Informações adicionais (opcional)
                     </summary>
 
                     <div className="grid gap-4 px-4 pb-4 pt-2 sm:grid-cols-2">
-                      <Select name="niche" label="Nicho" options={NICHE_OPTIONS} />
+                      <Select name="niche" label="Categoria" options={NICHE_OPTIONS} />
                       <Select name="monthlyRevenue" label="Faturamento (faixa)" options={REVENUE_OPTIONS} />
 
                       <Field
                         name="operatingRegion"
-                        label="Região de operação"
+                        label="Região de atuação"
                         placeholder="Ex.: litoral norte SP, Angra, RJ"
                         className="sm:col-span-2"
                       />
@@ -257,13 +271,12 @@ export function LeadForm() {
                       <Select name="preferredContact" label="Preferência de contato" options={CONTACT_OPTIONS} />
 
                       <div className="text-xs text-white/55 sm:col-span-1 flex items-center">
-                        Não trava o cadastro — só acelera.
+                        Opcional — ajuda a agilizar.
                       </div>
                     </div>
                   </details>
                 </div>
 
-                {/* honeypot */}
                 <input name="website_confirm" className="hidden" tabIndex={-1} autoComplete="off" />
 
                 <div className="sm:col-span-2">
@@ -271,13 +284,12 @@ export function LeadForm() {
                   <textarea
                     name="message"
                     rows={4}
-                    placeholder="O que você oferece, onde atua e links úteis (opcional)."
+                    placeholder="Conte um pouco sobre você e inclua links úteis (opcional)."
                     className="mt-2 w-full rounded-2xl bg-black/20 px-4 py-3 text-sm text-white outline-none ring-1 ring-white/10 focus:ring-brand-blue/40"
                   />
                 </div>
               </div>
 
-              {/* FOOTER */}
               <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-xs text-white/55">
                   LeadId: <span className="font-mono">{leadId ? leadId.slice(0, 8) : '--------'}</span>
@@ -292,7 +304,7 @@ export function LeadForm() {
                 </button>
               </div>
 
-              {ok ? <p className="mt-4 text-sm font-semibold text-white">Recebido. Vamos te chamar.</p> : null}
+              {ok ? <p className="mt-4 text-sm font-semibold text-white">Recebido. Vamos falar com você.</p> : null}
               {error ? <p className="mt-4 text-sm font-semibold text-red-300">{error}</p> : null}
             </form>
           </Reveal>
@@ -367,50 +379,43 @@ function CNPJField({ required, disabled }: { required: boolean; disabled: boolea
         }}
         className="mt-2 w-full rounded-2xl bg-black/20 px-4 py-3 text-sm text-white outline-none ring-1 ring-white/10 focus:ring-brand-blue/40 disabled:opacity-60"
       />
-      <div className="mt-2 text-[11px] leading-4 text-white/50">Usamos pra validar parceria e agilizar onboarding.</div>
+      <div className="mt-2 text-[11px] leading-4 text-white/50">Opcional, se você ainda estiver regularizando.</div>
     </div>
   )
 }
 
-function ToggleCard({
-  topLabel,
+function ToggleInline({
   label,
   helper,
   checked,
   onToggle
 }: {
-  topLabel: string
   label: string
   helper: string
   checked: boolean
   onToggle: () => void
 }) {
   return (
-    <div>
-      <label className="text-xs font-semibold tracking-wide text-white/60">{topLabel}</label>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="mt-2 flex w-full items-center justify-between rounded-2xl bg-black/20 px-4 py-3 text-left ring-1 ring-white/10 transition hover:bg-white/5 hover:ring-white/15"
-      >
-        <div className="min-w-0">
-          <div className="text-sm font-semibold text-white/85">{label}</div>
-          <div className="mt-1 text-[11px] leading-4 text-white/50">{helper}</div>
-        </div>
+    <button
+      type="button"
+      onClick={onToggle}
+      className="flex w-full items-center justify-between rounded-2xl bg-black/20 px-4 py-3 text-left ring-1 ring-white/10 transition hover:bg-white/5 hover:ring-white/15"
+    >
+      <div className="min-w-0">
+        <div className="text-sm font-semibold text-white/85">{label}</div>
+        <div className="mt-1 text-[11px] leading-4 text-white/50">{helper}</div>
+      </div>
 
-        <span
-          className={
-            'inline-flex h-6 w-11 items-center rounded-full p-1 ring-1 transition ' +
-            (checked ? 'bg-brand-blue/35 ring-brand-blue/40' : 'bg-white/10 ring-white/10')
-          }
-          aria-hidden="true"
-        >
-          <span
-            className={'h-4 w-4 rounded-full bg-white transition ' + (checked ? 'translate-x-5' : 'translate-x-0')}
-          />
-        </span>
-      </button>
-    </div>
+      <span
+        className={
+          'inline-flex h-6 w-11 items-center rounded-full p-1 ring-1 transition ' +
+          (checked ? 'bg-brand-blue/35 ring-brand-blue/40' : 'bg-white/10 ring-white/10')
+        }
+        aria-hidden="true"
+      >
+        <span className={'h-4 w-4 rounded-full bg-white transition ' + (checked ? 'translate-x-5' : 'translate-x-0')} />
+      </span>
+    </button>
   )
 }
 

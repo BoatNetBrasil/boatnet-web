@@ -6,52 +6,52 @@ import { ShieldCheck, Wallet, CalendarCheck, Star, TrendingUp, Headphones } from
 
 const items = [
   {
-    title: 'Onboarding Premium',
-    desc: 'Validação + configuração rápida. Sem fricção e sem ruído.',
+    title: 'Onboarding guiado',
+    desc: 'Cadastro, verificação e publicação com fluxo simples e rápido.',
     icon: CalendarCheck,
     meta: 'cadastro • verificação • setup'
   },
   {
-    title: 'Regras & Depósito',
-    desc: 'Termos claros, política de cancelamento e caução padronizada.',
+    title: 'Regras claras',
+    desc: 'Políticas objetivas para reservas, cancelamentos e conduta.',
     icon: ShieldCheck,
-    meta: 'políticas • proteção • consistência'
+    meta: 'políticas • transparência • segurança'
   },
   {
-    title: 'Pagamentos & Repasse',
-    desc: 'Fluxo pronto para PSP. Comprovantes e conciliação.',
+    title: 'Pagamentos e repasses',
+    desc: 'Recebimentos organizados, histórico e acompanhamento do financeiro.',
     icon: Wallet,
-    meta: 'PSP • repasse • conciliação'
+    meta: 'pagamentos • repasse • histórico'
   },
   {
-    title: 'Reputação',
-    desc: 'Avaliações e histórico para aumentar confiança e conversão.',
+    title: 'Avaliações',
+    desc: 'Reputação baseada em experiência real para gerar confiança.',
     icon: Star,
-    meta: 'reviews • prova social • ranking'
+    meta: 'avaliações • prova social • confiança'
   },
   {
     title: 'Performance',
-    desc: 'Leads melhores e tracking do funil para otimizar receita.',
+    desc: 'Visibilidade, leads melhores e indicadores para vender mais.',
     icon: TrendingUp,
-    meta: 'funil • métricas • conversão'
+    meta: 'métricas • conversão • crescimento'
   },
   {
-    title: 'Suporte',
-    desc: 'Operação com padrão: atendimento e resolução rápida.',
+    title: 'Ajuda',
+    desc: 'Suporte para dúvidas e orientação durante o uso da plataforma.',
     icon: Headphones,
-    meta: 'SLA • suporte • operação'
+    meta: 'atendimento • orientações • suporte'
   }
 ]
 
 export function Programs() {
   return (
-    <section id="programs" className="py-16 sm:py-20">
+    <section id="parceiros" className="py-16 sm:py-20">
       <Container>
         <Reveal>
           <SectionHeader
-            kicker="Partner"
-            title="Modelo de parceria que escala"
-            subtitle="Tudo que o parceiro precisa para operar com padrão, receber melhor e vender mais — sem improviso."
+            kicker="Parceiros"
+            title="Parceria feita para escalar com organização."
+            subtitle="Ferramentas e padrão para anunciar melhor, receber com clareza e vender mais — com menos fricção."
           />
         </Reveal>
 
@@ -93,9 +93,7 @@ function Card({
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-blue/15 ring-1 ring-brand-blue/30">
           <Icon className="h-5 w-5 text-brand-blue" aria-hidden="true" />
         </div>
-        <span className="text-xs font-semibold tracking-wide text-white/55 group-hover:text-white/75 transition">
-          padrão →
-        </span>
+        
       </div>
 
       <div className="mt-4 text-lg font-semibold tracking-tight">{title}</div>
