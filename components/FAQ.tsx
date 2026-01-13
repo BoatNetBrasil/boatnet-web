@@ -8,20 +8,40 @@ import { ChevronDown } from 'lucide-react'
 
 const faqs = [
   {
-    q: 'O site vende o quê?',
-    a: 'O site vende visão e desejo. O app executa: catálogo, reserva, pagamento, suporte e reputação.'
+    q: 'O que é a BoatNet?',
+    a: 'A BoatNet é um ecossistema premium para náutica: serviços, marinas, experiências e compra e venda — com curadoria, reservas e avaliações.'
   },
   {
-    q: 'Tem pagamento no site?',
-    a: 'Não. A operação fica no app. Quando o Stripe/PSP estiver ok, os webhooks orquestram no AWS.'
+    q: 'Qual é o papel do site?',
+    a: 'O site apresenta o ecossistema, explica o passo a passo e direciona você para a melhor decisão. Para reservar, pagar e acompanhar, o acesso é pelo app.'
   },
   {
-    q: 'Como uma marina entra?',
-    a: 'Preenche o formulário, define oferta (vagas/planos), regras e disponibilidade. A partir daí o onboarding vira rotina.'
+    q: 'Como funcionam reservas?',
+    a: 'Você escolhe a oferta, confere disponibilidade e regras, e conclui a reserva no app com confirmação, informações organizadas e atualizações.'
   },
   {
-    q: 'E loja / broker?',
-    a: 'Lista produtos e recebe leads com rastreio. A meta é aumentar conversão com reputação e contexto.'
+    q: 'Quais formas de pagamento são aceitas?',
+    a: 'O pagamento é feito no app, com opções amplamente usadas no Brasil e comprovantes. As alternativas exibidas variam conforme o tipo de serviço e o parceiro.'
+  },
+  {
+    q: 'Como a BoatNet garante confiança?',
+    a: 'Parceiros verificados, informações claras e avaliações reais. Isso reduz incerteza, eleva o padrão e melhora a experiência do início ao fim.'
+  },
+  {
+    q: 'Existe suporte humano de verdade?',
+    a: 'Sim. No app, você tem suporte 24h com pessoas de verdade para ajudar antes, durante e depois da sua experiência.'
+  },
+  {
+    q: 'Onde acompanho minha reserva?',
+    a: 'No app. Você acompanha status, recebe atualizações e mantém tudo centralizado: detalhes, orientações e histórico.'
+  },
+  {
+    q: 'Sou marina, operador, prestador de serviço ou loja. Como entro?',
+    a: 'Acesse a seção “Parceiros” e preencha o cadastro. Nossa equipe entra em contato para orientar a entrada e os próximos passos.'
+  },
+  {
+    q: 'Como falar com a BoatNet por email?',
+    a: 'Você pode enviar uma mensagem para contato@boatnet.com.br.'
   }
 ]
 
@@ -31,9 +51,9 @@ export function FAQ() {
       <Container>
         <Reveal>
           <SectionHeader
-            kicker="FAQ"
-            title="Perguntas que travam conversão — já resolvidas"
-            subtitle="Sem explicar demais. Só o suficiente pra pessoa baixar o app ou virar parceiro."
+            kicker="Perguntas frequentes"
+            title="Clareza e confiança, do primeiro clique à experiência"
+            subtitle="Curadoria, reservas, pagamentos e suporte humano 24h no app."
           />
         </Reveal>
 

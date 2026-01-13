@@ -7,12 +7,12 @@ import { Button } from '@/components/Button'
 import { Badge } from '@/components/Badge'
 
 const cards = [
-  { k: 'EXPERIÊNCIA', v: 'Jornada premium, sem fricção' },
-  { k: 'CURADORIA', v: 'Seleção que economiza tempo' },
-  { k: 'BOOKING', v: 'Reserva clara, resposta rápida' },
-  { k: 'PAGAMENTOS', v: 'Fluxo seguro + comprovantes' },
-  { k: 'CONFIANÇA', v: 'Regras, histórico e suporte' },
-  { k: 'REPUTAÇÃO', v: 'Avaliações que geram venda' }
+  { k: 'EXPERIÊNCIA', v: 'Padrão premium do início ao fim' },
+  { k: 'CURADORIA', v: 'Escolha mais rápida e segura' },
+  { k: 'RESERVAS', v: 'Status e detalhes organizados' },
+  { k: 'PAGAMENTOS', v: 'Proteção + comprovantes' },
+  { k: 'CONFIANÇA', v: 'Regras claras e parceiros verificados' },
+  { k: 'AVALIAÇÕES', v: 'Reputação real que orienta decisões' }
 ]
 
 export function Hero() {
@@ -23,7 +23,6 @@ export function Hero() {
       <WaveBackdrop />
 
       <Container>
-        {/* items-start = topo do mock alinhado com início do conteúdo da esquerda */}
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           {/* LEFT */}
           <div className="relative z-10">
@@ -33,7 +32,7 @@ export function Hero() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-blue/60 opacity-40" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-blue" />
                 </span>
-                CURADORIA • BOOKING • CONFIANÇA
+                SERVIÇOS • RESERVAS • SUPORTE 24H
               </span>
             </Badge>
 
@@ -48,18 +47,18 @@ export function Hero() {
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              Vitrine premium + operação real: passeios, day-use, compra & venda, serviços e marinas — com regras claras,
-              pagamentos e histórico.
+              Serviços, marinas, experiências e compra e venda — com curadoria, reservas e avaliações.
+              No app, você acompanha tudo e conta com <span className="text-white/85 font-semibold">suporte humano 24h</span>.
+              Nosso objetivo é <span className="text-white/85 font-semibold">mudar o mundo da náutica</span>.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixar o app</Button>
-              <Button href="#verticals" variant="ghost">
-                Ver o ecossistema
+              <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixe o app</Button>
+              <Button href="#servicos" variant="ghost">
+                Explorar serviços
               </Button>
             </div>
 
-            {/* 6 blocos */}
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
               {cards.map((item, i) => (
                 <motion.div
@@ -85,7 +84,6 @@ export function Hero() {
           <div className="relative z-10 flex flex-col items-center lg:items-end">
             <div className="absolute -inset-6 rounded-[32px] bg-brand-blue/10 blur-2xl" />
 
-            {/* WRAPPER com largura fixa = mock + pills alinhados perfeito */}
             <div className="relative w-[300px] sm:w-[340px] lg:w-[360px]">
               <motion.div
                 initial={reduce ? { opacity: 1 } : { opacity: 0, y: 12 }}
@@ -97,9 +95,8 @@ export function Hero() {
                 <PhoneMock src="/placeholders/app-shot-1.png" />
               </motion.div>
 
-              {/* Pills: alinhados na MESMA largura do mock */}
               <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Pill>IOS FIRST</Pill>
+                <Pill>IOS-FIRST</Pill>
                 <Pill>PARCEIROS VERIFICADOS</Pill>
                 <Pill>PADRÃO PREMIUM</Pill>
               </div>
@@ -111,14 +108,10 @@ export function Hero() {
   )
 }
 
-/** Use isso quando a imagem já é um iPhone completo (moldura + transparência). */
 function PhoneMock({ src }: { src: string }) {
   return (
     <div className="relative">
-      {/* glow atrás do aparelho */}
       <div className="pointer-events-none absolute -inset-10 rounded-[56px] bg-brand-blue/12 blur-3xl" />
-
-      {/* NÃO recorta. Mantém a transparência perfeita e as bordas bonitas */}
       <Image
         src={src}
         alt="App preview"
@@ -136,28 +129,14 @@ function WaveBackdrop() {
     <>
       <style jsx global>{`
         @keyframes bn-wave-x {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
         }
         @keyframes bn-shimmer {
-          0% {
-            transform: translateX(-38%);
-            opacity: 0;
-          }
-          18% {
-            opacity: 0.22;
-          }
-          60% {
-            opacity: 0.12;
-          }
-          100% {
-            transform: translateX(38%);
-            opacity: 0;
-          }
+          0% { transform: translateX(-38%); opacity: 0; }
+          18% { opacity: 0.22; }
+          60% { opacity: 0.12; }
+          100% { transform: translateX(38%); opacity: 0; }
         }
       `}</style>
 

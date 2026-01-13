@@ -1,42 +1,40 @@
 import { Container } from '@/components/Container'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeader } from '@/components/SectionHeader'
-import { CalendarCheck, CreditCard, ShieldCheck, Star } from 'lucide-react'
+import { Search, LayoutGrid, Tag, MapPinCheck, LifeBuoy } from 'lucide-react'
 
 const steps = [
-  { t: 'Descobrir', d: 'Catálogo limpo, filtros úteis e oferta com contexto.', icon: CalendarCheck },
-  { t: 'Reservar', d: 'Datas, regras e confirmação sem ruído.', icon: ShieldCheck },
-  { t: 'Pagar', d: 'Fluxo pronto para PSP (Stripe/Mercado Pago/Adyen) + comprovantes.', icon: CreditCard },
-  { t: 'Viver', d: 'Check-in, suporte, avaliação e histórico.', icon: Star }
+  { t: 'Buscar', d: 'Encontre o que precisa com filtros simples e resultados claros.', icon: Search },
+  { t: 'Categorias', d: 'Navegue por serviços, marinas, experiências e compra e venda.', icon: LayoutGrid },
+  { t: 'Ofertas', d: 'Compare opções com contexto: fotos, regras e avaliações.', icon: Tag },
+  { t: 'Acompanhar', d: 'Veja status da sua reserva e atualizações em um só lugar.', icon: MapPinCheck },
+  { t: 'Ajuda', d: 'Suporte quando você precisar — antes, durante e depois.', icon: LifeBuoy }
 ]
-
-const bookingStates = ['draft', 'paid', 'confirmed', 'in_progress', 'completed', 'cancel', 'refund', 'dispute']
 
 export function HowItWorks() {
   return (
-    <section id="como-funciona" className="py-16 sm:py-20">
+    <section id="passo-a-passo" className="py-16 sm:py-20">
       <Container>
         <Reveal>
           <SectionHeader
-            kicker="Flow"
-            title="Do interesse ao dinheiro — sem queda no meio"
-            subtitle="O site posiciona e converte. O app executa: catálogo, reserva, pagamento, suporte e reputação."
+            kicker="Passo a passo"
+            title="O site orienta. O app organiza."
+            subtitle="A BoatNet existe para simplificar a náutica — com curadoria, reservas e confiança. Nosso objetivo: mudar o mundo da náutica."
           />
         </Reveal>
 
         {/* Steps */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, idx) => (
             <Reveal key={s.t} delay={0.06 * idx}>
               <div className="h-full rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 glow">
-                {/* header fixo para alinhar */}
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-blue/15 ring-1 ring-brand-blue/30">
                     <s.icon className="h-5 w-5 text-brand-blue" aria-hidden="true" />
                   </div>
 
                   <div className="min-w-0">
-                    <div className="text-xs font-semibold tracking-wide text-white/55">Passo {idx + 1}</div>
+                    <div className="text-xs font-semibold tracking-wide text-white/55">Etapa {idx + 1}</div>
                     <div className="text-base font-semibold leading-tight">{s.t}</div>
                   </div>
                 </div>
@@ -52,47 +50,46 @@ export function HowItWorks() {
           <Reveal delay={0.05}>
             <div className="h-full rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 glow">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs font-semibold tracking-wide text-white/60">Estados de reserva (MVP)</div>
-                <div className="text-[11px] font-semibold tracking-wide text-white/40">máquina de estados</div>
+                <div className="text-xs font-semibold tracking-wide text-white/60">Acompanhe sua reserva</div>
+                <div className="text-[11px] font-semibold tracking-wide text-white/40">tudo em um lugar</div>
               </div>
 
-              {/* chips com grid pra ficar alinhado */}
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {bookingStates.map((x) => (
-                  <span
-                    key={x}
-                    className="inline-flex items-center justify-center rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/70 ring-1 ring-white/10"
-                  >
-                    {x}
-                  </span>
-                ))}
-              </div>
+              <ul className="mt-4 space-y-2 text-sm text-white/70">
+                <li className="flex gap-2">
+                  <span className="text-white/40">•</span>
+                  <span>Confirmação e atualizações do pedido</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-white/40">•</span>
+                  <span>Informações importantes e regras do serviço</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-white/40">•</span>
+                  <span>Histórico e avaliações após a experiência</span>
+                </li>
+              </ul>
             </div>
           </Reveal>
 
           <Reveal delay={0.11}>
             <div className="h-full rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 glow">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs font-semibold tracking-wide text-white/60">Segurança (no que importa)</div>
-                <div className="text-[11px] font-semibold tracking-wide text-white/40">padrão produção</div>
+                <div className="text-xs font-semibold tracking-wide text-white/60">Confiança (no que importa)</div>
+                <div className="text-[11px] font-semibold tracking-wide text-white/40">padrão premium</div>
               </div>
 
               <ul className="mt-4 space-y-2 text-sm text-white/70">
                 <li className="flex gap-2">
                   <span className="text-white/40">•</span>
-                  <span>S3 privado + URLs assinadas</span>
+                  <span>Parceiros verificados e informações claras</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-white/40">•</span>
-                  <span>Auditoria e least privilege</span>
+                  <span>Pagamentos com proteção e comprovantes</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="text-white/40">•</span>
-                  <span>Idempotência em pagamentos e webhooks</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-white/40">•</span>
-                  <span>Cancelamento/estorno com regras</span>
+                  <span>Avaliações reais para orientar escolhas</span>
                 </li>
               </ul>
             </div>

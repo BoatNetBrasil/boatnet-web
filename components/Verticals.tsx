@@ -7,51 +7,51 @@ import { Waves, Ship, LifeBuoy, Store, Building2, Anchor } from 'lucide-react'
 const items = [
   {
     title: 'Passeios',
-    desc: 'Do anúncio ao check-in: agenda, extras, regras claras e avaliação.',
+    desc: 'Escolha, reserve e viva a experiência com clareza do início ao fim.',
     icon: Waves,
     meta: 'curadoria • agenda • experiência'
   },
   {
-    title: 'Aluguel Day-use',
-    desc: 'Barcos, lanchas, jetskis: disponibilidade, termos e depósito sem fricção.',
+    title: 'Aluguel day-use',
+    desc: 'Disponibilidade, regras e confirmação de forma simples e rápida.',
     icon: Ship,
-    meta: 'disponibilidade • termos • depósito'
+    meta: 'disponibilidade • regras • confirmação'
   },
   {
-    title: 'Compra & Venda',
-    desc: 'Leads qualificados — sem bagunça. Chat, prova social e conversão.',
+    title: 'Compra e venda',
+    desc: 'Conecte oferta e demanda com contexto, confiança e intenção.',
     icon: Store,
     meta: 'leads • confiança • conversão'
   },
   {
-    title: 'Serviços & Documentos',
-    desc: 'Marinheiro, mecânica, limpeza, despachante, laudos e mais.',
+    title: 'Serviços e documentos',
+    desc: 'Profissionais, manutenção e documentação em um só lugar.',
     icon: LifeBuoy,
-    meta: 'serviços • compliance • agendamento'
+    meta: 'serviços • documentação • agendamento'
   },
   {
     title: 'Marinas',
-    desc: 'Vagas, mensalidade, regras e relacionamento com o cliente.',
+    desc: 'Vagas, estrutura e relacionamento — com padrão e transparência.',
     icon: Building2,
-    meta: 'vagas • contrato • recorrência'
+    meta: 'vagas • regras • recorrência'
   },
   {
-    title: 'Eventos & Experiências',
-    desc: 'Roteiros, ativações e experiências premium para aumentar ticket e recorrência.',
+    title: 'Eventos e experiências',
+    desc: 'Roteiros e ativações premium para aumentar ticket e recorrência.',
     icon: Anchor,
-    meta: 'experiência • upsell • recorrência'
+    meta: 'experiência • premium • recorrência'
   }
 ]
 
 export function Verticals() {
   return (
-    <section id="verticals" className="py-16 sm:py-20">
+    <section id="servicos" className="py-16 sm:py-20">
       <Container>
         <Reveal>
           <SectionHeader
-            kicker="Verticals"
-            title="Tudo que importa no náutico — por intenção"
-            subtitle="O site é vitrine. O app fecha. Mostre o ecossistema e direcione o usuário para baixar e converter."
+            kicker="Serviços"
+            title="Um ecossistema completo para a náutica."
+            subtitle="Descubra serviços, experiências e soluções — com curadoria, reservas e confiança em um só lugar."
           />
         </Reveal>
 
@@ -90,9 +90,7 @@ function Card({
           <Icon className="h-5 w-5 text-brand-blue" aria-hidden="true" />
         </div>
 
-        <a href="#app" className="text-xs font-semibold tracking-wide text-white/55 transition hover:text-white/80">
-          abrir no app →
-        </a>
+       
       </div>
 
       <div className="mt-4 text-lg font-semibold tracking-tight">{title}</div>

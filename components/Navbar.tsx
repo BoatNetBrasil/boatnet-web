@@ -6,11 +6,9 @@ import { Button } from '@/components/Button'
 import { cn } from '@/lib/cn'
 
 const links = [
-  { href: '#o-app', label: 'O app' },
-  { href: '#verticals', label: 'Verticais' },
-  { href: '#como-funciona', label: 'Como funciona' },
-  { href: '#programas', label: 'Parceiros' },
-  { href: '#contato', label: 'Entrar' }
+  { href: '#servicos', label: 'Serviços' },
+  { href: '#passo-a-passo', label: 'Passo a passo' },
+  { href: '#parceiros', label: 'Parceiros' },
 ]
 
 export function Navbar() {
@@ -50,10 +48,15 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'} variant="ghost" className="hidden sm:inline-flex">
-            Baixar o app
+          <Button
+            href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#'}
+            variant="ghost"
+            className="hidden sm:inline-flex"
+          >
+            Baixe o app
           </Button>
-          <Button href="#contato">Virar parceiro</Button>
+
+          <Button href="#parceiros">Virar parceiro</Button>
         </div>
       </Container>
     </div>
