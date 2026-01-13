@@ -5,15 +5,11 @@ import { Container } from '@/components/Container'
 
 const words = [
   'CURADORIA',
-<<<<<<< HEAD
   'BOOKING',
   'PAGAMENTO',
   'REPASSE',
-  'AVALIAÇÕES',
+  'REPUTAÇÃO',
   'MARINAS',
-=======
-  'EXPERIÊNCIAS',
->>>>>>> 8347100 (Update site copy, nav, hero, faq, partners form and footer)
   'SERVIÇOS',
   'MARINAS',
   'RESERVAS',

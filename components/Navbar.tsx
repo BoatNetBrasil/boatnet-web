@@ -6,17 +6,11 @@ import { Button } from '@/components/Button'
 import { cn } from '@/lib/cn'
 
 const links = [
-<<<<<<< HEAD
-
-  { href: '#serviços', label: 'Serviços' },
+  { href: '#o-app', label: 'O app' },
+  { href: '#verticals', label: 'Verticais' },
   { href: '#como-funciona', label: 'Como funciona' },
   { href: '#programas', label: 'Parceiros' },
-
-=======
-  { href: '#servicos', label: 'Serviços' },
-  { href: '#passo-a-passo', label: 'Passo a passo' },
-  { href: '#parceiros', label: 'Parceiros' },
->>>>>>> 8347100 (Update site copy, nav, hero, faq, partners form and footer)
+  { href: '#contato', label: 'Entrar' }
 ]
 
 export function Navbar() {
