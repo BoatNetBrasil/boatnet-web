@@ -7,7 +7,12 @@ import { Reveal } from '@/components/Reveal'
 import { Badge } from '@/components/Badge'
 import { Button } from '@/components/Button'
 
-const shots = ['/placeholders/app-shot-1.png', '/placeholders/app-shot-2.png', '/placeholders/app-shot-3.png']
+const shots = [
+  '/placeholders/app-shot-2.png',
+  '/placeholders/app-shot-3.png',
+  '/placeholders/app-shot-4.png'
+]
+
 const WHATSAPP_NUMBER = '+5511941752551'
 
 function waLink(message: string) {
