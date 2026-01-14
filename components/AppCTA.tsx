@@ -175,19 +175,15 @@ export function AppCTA() {
           {/* RIGHT */}
           <Reveal delay={0.08}>
             <div className="relative mx-auto w-[320px] sm:w-[360px]">
-              <div className="absolute -inset-8 rounded-[40px] bg-brand-blue/10 blur-2xl" />
-
-              <div className="relative overflow-hidden rounded-[44px] bg-black ring-1 ring-white/15 shadow-soft">
-                <div className="absolute left-1/2 top-3 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-black/80 ring-1 ring-white/10" />
-                <Image
-                  src={shots[idx]}
-                  alt="App screenshot"
-                  width={900}
-                  height={1950}
-                  className="h-auto w-full opacity-95"
-                  priority={idx === 0}
-                />
-              </div>
+              {/* REMOVIDO: glow/blur de fundo e mockup preto */}
+              <Image
+                src={shots[idx]}
+                alt="App screenshot"
+                width={900}
+                height={1950}
+                className="h-auto w-full"
+                priority={idx === 0}
+              />
 
               <div className="mt-4 flex items-center justify-center gap-2">
                 {shots.map((_, i) => (
