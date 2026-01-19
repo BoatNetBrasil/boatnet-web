@@ -52,9 +52,9 @@ export function Navbar() {
             variant="ghost"
             className="hidden sm:inline-flex"
           >
-            Baixe o app
+            Baixar o APP
           </Button>
-          <Button href="#parceiros">Virar parceiro</Button>
+          <Button href="#parceiros">Quero ser Parceiro</Button>
         </div>
       </Container>
     </div>
