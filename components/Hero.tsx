@@ -47,9 +47,8 @@ export function Hero() {
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              O site existe para apresentar o ecossistema e guiar a escolha com clareza. No app, você encontra serviços,
-              marinas, experiências e compra e venda — com curadoria, reservas e confiança. Nosso objetivo é{' '}
-              <span className="text-white/85 font-semibold">mudar o mundo da náutica</span>.
+              Uma plataforma para encontrar serviços, embarcações, marinas, experiências e compra & venda com curadoria, regras claras e suporte ponta a ponta.{' '}
+              <span className="text-white/85 font-semibold">Todo o mundo náutico em um só lugar.</span>.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
