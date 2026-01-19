@@ -31,7 +31,7 @@ export function Navbar() {
     >
       <Container className="flex h-16 items-center justify-between">
         <a href="#top" className="flex items-center gap-3">
-          <span className="text-sm font-semibold tracking-[0.22em] text-white/90">BOATNET</span>
+          <span className="text-sm font-semibold tracking-[0.22em] text-white/90">BOAT NET</span>
         </a>
 
         <nav className="hidden items-center gap-6 md:flex">

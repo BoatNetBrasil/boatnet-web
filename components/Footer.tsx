@@ -8,7 +8,7 @@ export function Footer() {
       <Container>
         <div className="hr" />
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-xs text-white/55">© {year} BoatNet. Todos os direitos reservados.</div>
+          <div className="text-xs text-white/55">© {year} BOAT NET. Todos os direitos reservados.</div>
 
           <div className="flex flex-wrap gap-4 text-xs font-semibold tracking-wide text-white/60">
             <a href="#o-app" className="hover:text-white">Baixar o APP</a>

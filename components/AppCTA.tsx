@@ -23,7 +23,7 @@ function waLink(message: string) {
 function buildWhatsAppMessage(kind: 'partner' | 'fast') {
   if (kind === 'partner') {
     return [
-      'Olá! Quero virar parceiro(a) da BoatNet.',
+      'Olá! Quero virar parceiro(a) da BOAT NET.',
       '',
       '✅ Tipo: Parceiro / Marina / Loja-Broker',
       '✅ Cidade/UF:',
@@ -39,7 +39,7 @@ function buildWhatsAppMessage(kind: 'partner' | 'fast') {
   }
 
   return [
-    'Oi! Preciso falar com a BoatNet.',
+    'Oi! Preciso falar com a BOAT NET.',
     '',
     'Sou:',
     'Cidade/UF:',
@@ -156,7 +156,7 @@ export function AppCTA() {
 
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 {[
-                  { k: 'Educar', v: 'explicar o padrão BoatNet' },
+                  { k: 'Educar', v: 'explicar o padrão BOAT NET' },
                   { k: 'Desejo', v: 'vitrine estilo revista' },
                   { k: 'Converter', v: 'levar pro app' },
                   { k: 'Confiança', v: 'dar contexto e segurança' },

@@ -19,7 +19,7 @@ export function HowItWorks() {
           <SectionHeader
             kicker="Passo a passo"
             title="O site orienta. O app organiza."
-            subtitle="A BoatNet existe para simplificar a náutica — com curadoria, reservas e confiança. Nosso objetivo: mudar o mundo da náutica."
+            subtitle="A BOAT NET existe para simplificar a náutica — com curadoria, reservas e confiança. Nosso objetivo: mudar o mundo da náutica."
           />
         </Reveal>
 

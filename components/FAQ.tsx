@@ -8,7 +8,7 @@ import { ChevronDown } from 'lucide-react'
 
 const faqs = [
   {
-    q: 'O que é a BoatNet?',
+    q: 'O que é a BOAT NET?',
     a: 'Uma plataforma para organizar a náutica em um só lugar: serviços, marinas, experiências e compra & venda — com curadoria, reservas e avaliações no app.'
   },
   {
@@ -32,7 +32,7 @@ const faqs = [
     a: 'Sim. No app você acompanha status, mensagens, orientações e histórico — do início ao fim.'
   },
   {
-    q: 'A BoatNet verifica parceiros?',
+    q: 'A BOAT NET verifica parceiros?',
     a: 'Sim. Parceiros passam por validação e seguem um padrão de operação e atendimento para garantir consistência.'
   },
   {

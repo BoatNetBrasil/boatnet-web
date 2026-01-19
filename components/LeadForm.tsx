@@ -143,7 +143,7 @@ export function LeadForm() {
           <div className="mx-auto max-w-3xl text-center">
             <SectionHeader
               kicker="Parceiros"
-              title="Entre para a rede BoatNet"
+              title="Entre para a rede BOAT NET"
               subtitle="Cadastre sua operação e receba contato para próximos passos. Simples, rápido e sem burocracia."
             />
           </div>

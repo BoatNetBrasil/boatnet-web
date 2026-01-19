@@ -32,7 +32,7 @@ export function Hero() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-blue/60 opacity-40" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-blue" />
                 </span>
-                CURADORIA • RESERVAS • AVALIAÇÕES
+                Curadoria • Reservas • Confiança
               </span>
             </Badge>
 
@@ -43,7 +43,7 @@ export function Hero() {
               className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl"
             >
               O mar inspira.
-              <span className="block text-white/70">A BoatNet organiza e simplifica.</span>
+              <span className="block text-white/70">A BOAT NET padroniza.</span>
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">

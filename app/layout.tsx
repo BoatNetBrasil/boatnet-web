@@ -10,14 +10,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'BoatNet — o mundo náutico em 1 app',
+  title: 'BOAT NET — o mundo náutico em 1 app',
   description: 'Catálogo, booking, pagamento e parceiros — tudo no mesmo lugar.',
   metadataBase: new URL('https://boatnet.app'),
   icons: {
     icon: '/brand/app-icon.png'
   },
   openGraph: {
-    title: 'BoatNet',
+    title: 'BOAT NET',
     description: 'Compre, alugue e viva o mundo náutico.',
     images: ['/placeholders/og.png']
   }
