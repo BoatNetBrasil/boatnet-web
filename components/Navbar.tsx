@@ -33,7 +33,7 @@ export function Navbar() {
         {/* LOGO + TEXTO */}
         <a href="#top" className="flex items-center gap-3">
           <img
-            src="/app-shot-9.png"
+            src="/app-shot-10.png"
             alt="Boat Net"
             className="h-7 w-auto"
           />
