@@ -141,7 +141,7 @@ export function AppCTA() {
             </h2>
 
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/70">
-              Este site apresenta o ecossistema BOAT NET e ajuda você a decidir com clareza. No app BOAT NET, você agenda/reserva expêriencias, encontra serviços e negocia compra & vnenda com parceiros verificados, políticas transparentes e atendimento com excelência.
+              Este site apresenta o ecossistema BOAT NET e ajuda você a decidir com clareza. No app BOAT NET, você agenda/reserva expêriencias, encontra serviços e negocia compra & venda com parceiros verificados, políticas transparentes e atendimento humano com excelência.
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
