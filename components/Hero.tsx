@@ -47,7 +47,7 @@ export function Hero() {
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              Uma plataforma para encontrar serviços, embarcações, marinas, experiências e compra & venda com curadoria, regras claras e suporte ponta a ponta.{' '}
+              Uma plataforma para encontrar serviços, embarcações, marinas, experiências e compra & venda com curadoria, regras claras e suporte humano durante toda negociação.{' '}
               <span className="text-white/85 font-semibold">Todo o mundo náutico em um só lugar.</span>.
             </p>
 
