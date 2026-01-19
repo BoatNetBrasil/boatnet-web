@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { Reveal } from '@/components/Reveal'
 import { SectionHeader } from '@/components/SectionHeader'
@@ -158,8 +159,20 @@ export function LeadForm() {
               }}
               className="mx-auto max-w-4xl rounded-3xl bg-white/5 p-5 sm:p-6 ring-1 ring-white/10 glow"
             >
+              {/* LOGO NO TOPO */}
+              <div className="flex justify-center">
+                <Image
+                  src="/app-shot-9.png"
+                  alt="BOAT NET"
+                  width={140}
+                  height={140}
+                  priority
+                  className="h-auto w-[110px] sm:w-[140px]"
+                />
+              </div>
+
               {/* TOP */}
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0">
                   <div className="text-xs font-semibold tracking-wide text-white/60">Tipo</div>
 
