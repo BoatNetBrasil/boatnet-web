@@ -35,7 +35,7 @@ export function Navbar() {
           <img
             src="/app-shot-10.png"
             alt="Boat Net"
-            className="relative top-[6px] h-[4.925rem] w-auto"
+            className="relative top-[7px] h-[4.925rem] w-auto"
           />
 
           <span className="text-sm font-semibold tracking-[0.22em] text-white/90">
