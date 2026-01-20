@@ -140,7 +140,6 @@ export function LeadForm() {
     <section id="parceiros" className="py-14 sm:py-16">
       <Container>
         <Reveal>
-          {/* centraliza title + subtitle */}
           <div className="mx-auto max-w-3xl text-center">
             <SectionHeader
               kicker="Parceiros"
@@ -171,46 +170,48 @@ export function LeadForm() {
                 />
               </div>
 
-              {/* TOP */}
-              <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div className="min-w-0">
-                  <div className="text-xs font-semibold tracking-wide text-white/60">Tipo</div>
+              {/* TOP CENTRALIZADO */}
+              <div className="mt-4 flex justify-center">
+                <div className="flex w-full max-w-3xl flex-col items-center gap-4 lg:flex-row lg:items-start lg:justify-center">
+                  <div className="w-full lg:w-auto">
+                    <div className="text-center text-xs font-semibold tracking-wide text-white/60">Tipo</div>
 
-                  <div className="mt-2 inline-grid w-full grid-cols-3 rounded-2xl bg-black/20 p-1 ring-1 ring-white/10 sm:w-[440px]">
-                    {TYPE_OPTIONS.map((it) => {
-                      const active = it.value === type
-                      return (
-                        <button
-                          key={it.value}
-                          type="button"
-                          onClick={() => setType(it.value)}
-                          className={
-                            'rounded-xl px-3 py-2 text-sm font-semibold transition ' +
-                            (active
-                              ? 'bg-brand-blue/25 text-white ring-1 ring-brand-blue/35'
-                              : 'text-white/70 hover:text-white hover:bg-white/5')
-                          }
-                        >
-                          {it.label}
-                        </button>
-                      )
-                    })}
+                    <div className="mt-2 inline-grid w-full grid-cols-3 rounded-2xl bg-black/20 p-1 ring-1 ring-white/10 sm:w-[440px]">
+                      {TYPE_OPTIONS.map((it) => {
+                        const active = it.value === type
+                        return (
+                          <button
+                            key={it.value}
+                            type="button"
+                            onClick={() => setType(it.value)}
+                            className={
+                              'rounded-xl px-3 py-2 text-sm font-semibold transition ' +
+                              (active
+                                ? 'bg-brand-blue/25 text-white ring-1 ring-brand-blue/35'
+                                : 'text-white/70 hover:text-white hover:bg-white/5')
+                            }
+                          >
+                            {it.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    <div className="mt-2 text-center text-xs font-semibold tracking-wide text-white/45">{typeHint}</div>
                   </div>
 
-                  <div className="mt-2 text-xs font-semibold tracking-wide text-white/45">{typeHint}</div>
-                </div>
-
-                <div className="rounded-2xl bg-black/20 px-4 py-3 ring-1 ring-white/10 lg:max-w-[390px]">
-                  <div className="text-xs font-semibold tracking-wide text-white/60">Privacidade</div>
-                  <div className="mt-1 text-sm leading-relaxed text-white/70">
-                    Seus dados não ficam expostos publicamente. Contato e acesso são controlados.
+                  <div className="w-full rounded-2xl bg-black/20 px-4 py-3 ring-1 ring-white/10 lg:max-w-[390px]">
+                    <div className="text-center text-xs font-semibold tracking-wide text-white/60">Privacidade</div>
+                    <div className="mt-1 text-center text-sm leading-relaxed text-white/70">
+                      Seus dados não ficam expostos publicamente. Contato e acesso são controlados.
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-5 hr" />
 
-              {/* FIELDS */}
+              {/* FIELDS (mantidos) */}
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <Field name="name" label="Seu nome" placeholder="Nome e sobrenome" required />
                 <Field name="role" label="Cargo" placeholder="Ex.: proprietário, gerente" />
@@ -218,7 +219,6 @@ export function LeadForm() {
                 <Field name="company" label="Empresa" placeholder="Nome fantasia" required />
                 <Field name="legalName" label="Razão social" placeholder="(opcional)" />
 
-                {/* CNPJ + Empresa em abertura (abaixo, sem distorcer layout) */}
                 <div className="sm:col-span-2">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div>
@@ -283,9 +283,7 @@ export function LeadForm() {
 
                       <Select name="preferredContact" label="Preferência de contato" options={CONTACT_OPTIONS} />
 
-                      <div className="text-xs text-white/55 sm:col-span-1 flex items-center">
-                        Opcional — ajuda a agilizar.
-                      </div>
+                      <div className="text-xs text-white/55 sm:col-span-1 flex items-center">Opcional — ajuda a agilizar.</div>
                     </div>
                   </details>
                 </div>
