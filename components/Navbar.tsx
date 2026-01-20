@@ -33,10 +33,10 @@ export function Navbar() {
         {/* LOGO + TEXTO */}
         <a href="#top" className="flex items-center gap-3">
           <img
-  src="/app-shot-10.png"
-  alt="Boat Net"
-  className="h-[4.925rem] w-auto"
-/>
+            src="/app-shot-10.png"
+            alt="Boat Net"
+            className="relative top-[2px] h-[4.925rem] w-auto"
+          />
 
           <span className="text-sm font-semibold tracking-[0.22em] text-white/90">
             BOAT NET
