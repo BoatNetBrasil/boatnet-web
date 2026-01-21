@@ -140,12 +140,15 @@ export function LeadForm() {
     <section id="parceiros" className="py-14 sm:py-16">
       <Container>
         <Reveal>
-          <div className="mx-auto max-w-3xl text-center">
-            <SectionHeader
-              kicker="Parceiros"
-              title="Entre para a rede BOAT NET"
-              subtitle="Cadastre sua operação e receba contato para próximos passos. Simples, rápido e sem burocracia."
-            />
+          {/* HEADER CENTRALIZADO (força alinhamento do conteúdo interno do SectionHeader) */}
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center [&_*]:text-center [&_*]:mx-auto">
+              <SectionHeader
+                kicker="Parceiros"
+                title="Entre para a rede BOAT NET"
+                subtitle="Cadastre sua operação e receba contato para próximos passos. Simples, rápido e sem burocracia."
+              />
+            </div>
           </div>
         </Reveal>
 
