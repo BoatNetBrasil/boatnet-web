@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Container } from '@/components/Container'
@@ -18,7 +18,7 @@ const cards = [
 
 const DISMISS_KEY = 'bn_app_qr_dismissed_until'
 
-function getDismissedUntil(): number {
+function safeGetDismissedUntil(): number {
   try {
     const v = localStorage.getItem(DISMISS_KEY)
     return v ? Number(v) : 0
@@ -27,7 +27,7 @@ function getDismissedUntil(): number {
   }
 }
 
-function setDismissedForDays(days: number) {
+function safeSetDismissedForDays(days: number) {
   try {
     const until = Date.now() + days * 24 * 60 * 60 * 1000
     localStorage.setItem(DISMISS_KEY, String(until))
@@ -40,9 +40,11 @@ export function Hero() {
   const reduce = useReducedMotion()
   const [qrOpen, setQrOpen] = useState(false)
 
+  const appStoreUrl = process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'
+
   // abre ao carregar (1x por 7 dias)
   useEffect(() => {
-    const until = getDismissedUntil()
+    const until = safeGetDismissedUntil()
     if (Date.now() < until) return
     setQrOpen(true)
   }, [])
@@ -60,19 +62,15 @@ export function Hero() {
 
   function closeQr() {
     setQrOpen(false)
-    setDismissedForDays(7)
+    safeSetDismissedForDays(7)
   }
-
-  const appStoreUrl = process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'
 
   return (
     <section id="top" className="relative overflow-hidden pb-10 pt-28 sm:pb-14 sm:pt-32">
       <WaveBackdrop />
 
       {/* POPUP QR */}
-      {qrOpen ? (
-        <QrModal appStoreUrl={appStoreUrl} onClose={closeQr} reduceMotion={reduce} />
-      ) : null}
+      {qrOpen ? <QrModal appStoreUrl={appStoreUrl} onClose={closeQr} reduceMotion={!!reduce} /> : null}
 
       <Container>
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
@@ -181,15 +179,11 @@ function QrModal({
   return (
     <div className="fixed inset-0 z-[80]">
       {/* backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onMouseDown={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onMouseDown={onClose} aria-hidden="true" />
 
       <div className="relative mx-auto flex min-h-screen max-w-xl items-center justify-center px-4">
         <motion.div
-          initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 10, scale: 0.98 }}
+          initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 10, scale: 0.985 }}
           animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.35, ease: 'easeOut' }}
           className="w-full rounded-3xl bg-white/5 p-5 ring-1 ring-white/12 glow"
@@ -230,19 +224,22 @@ function QrModal({
 
             <div className="text-center sm:text-left">
               <div className="text-sm font-semibold text-white/90">Acesso rápido</div>
-              <div className="mt-2 text-sm text-white/70">
-                Se preferir, toque no botão abaixo para abrir o link direto.
-              </div>
+              <div className="mt-2 text-sm text-white/70">Ou abra o link direto agora.</div>
 
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Button href={appStoreUrl}>Baixar agora</Button>
-                <Button href="#o-app" variant="ghost" onClick={onClose as any}>
+
+                <a
+                  href="#o-app"
+                  onClick={onClose}
+                  className="inline-flex items-center justify-center rounded-full bg-white/5 px-6 py-3 text-sm font-semibold tracking-wide text-white/85 ring-1 ring-white/10 hover:bg-white/[0.07] hover:ring-white/15 transition"
+                >
                   Ver detalhes
-                </Button>
+                </a>
               </div>
 
               <div className="mt-4 text-[11px] text-white/55">
-                Dica: você pode fechar com <span className="font-semibold text-white/70">ESC</span>.
+                Dica: feche com <span className="font-semibold text-white/70">ESC</span>.
               </div>
             </div>
           </div>
@@ -350,31 +347,19 @@ function WavesSVG() {
       </defs>
 
       <g fill="none" stroke="url(#bnWaveGrad)" strokeWidth="2">
-        <path
-          d="M0,210 C150,150 300,270 450,210 C600,150 750,270 900,210 C1050,150 1150,250 1200,210"
-          opacity="0.55"
-        />
-        <path
-          d="M0,250 C170,190 310,310 480,250 C650,190 800,310 970,250 C1090,205 1160,285 1200,250"
-          opacity="0.38"
-        />
-        <path
-          d="M0,170 C160,115 320,235 480,170 C640,105 790,235 950,170 C1080,125 1160,205 1200,170"
-          opacity="0.28"
-        />
+        <path d="M0,210 C150,150 300,270 450,210 C600,150 750,270 900,210 C1050,150 1150,250 1200,210" opacity="0.55" />
+        <path d="M0,250 C170,190 310,310 480,250 C650,190 800,310 970,250 C1090,205 1160,285 1200,250" opacity="0.38" />
+        <path d="M0,170 C160,115 320,235 480,170 C640,105 790,235 950,170 C1080,125 1160,205 1200,170" opacity="0.28" />
       </g>
 
       <g fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="1">
-        <path
-          d="M0,290 C170,230 320,350 490,290 C660,230 820,350 990,290 C1110,245 1170,325 1200,290"
-          opacity="0.32"
-        />
+        <path d="M0,290 C170,230 320,350 490,290 C660,230 820,350 990,290 C1110,245 1170,325 1200,290" opacity="0.32" />
       </g>
     </svg>
   )
 }
 
-function Pill({ children }: { children: React.ReactNode }) {
+function Pill({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-full bg-white/5 px-4 py-2 text-[11px] font-semibold tracking-[0.18em] text-white/70 ring-1 ring-white/10">
       {children}
