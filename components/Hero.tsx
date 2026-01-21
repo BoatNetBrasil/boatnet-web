@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Container } from '@/components/Container'
@@ -15,12 +16,63 @@ const cards = [
   { k: 'AVALIAÇÕES', v: 'Reputação que orienta escolhas' }
 ]
 
+const DISMISS_KEY = 'bn_app_qr_dismissed_until'
+
+function getDismissedUntil(): number {
+  try {
+    const v = localStorage.getItem(DISMISS_KEY)
+    return v ? Number(v) : 0
+  } catch {
+    return 0
+  }
+}
+
+function setDismissedForDays(days: number) {
+  try {
+    const until = Date.now() + days * 24 * 60 * 60 * 1000
+    localStorage.setItem(DISMISS_KEY, String(until))
+  } catch {
+    // ignore
+  }
+}
+
 export function Hero() {
   const reduce = useReducedMotion()
+  const [qrOpen, setQrOpen] = useState(false)
+
+  // abre ao carregar (1x por 7 dias)
+  useEffect(() => {
+    const until = getDismissedUntil()
+    if (Date.now() < until) return
+    setQrOpen(true)
+  }, [])
+
+  // ESC fecha
+  useEffect(() => {
+    if (!qrOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeQr()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qrOpen])
+
+  function closeQr() {
+    setQrOpen(false)
+    setDismissedForDays(7)
+  }
+
+  const appStoreUrl = process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'
 
   return (
     <section id="top" className="relative overflow-hidden pb-10 pt-28 sm:pb-14 sm:pt-32">
       <WaveBackdrop />
+
+      {/* POPUP QR */}
+      {qrOpen ? (
+        <QrModal appStoreUrl={appStoreUrl} onClose={closeQr} reduceMotion={reduce} />
+      ) : null}
 
       <Container>
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
@@ -47,15 +99,25 @@ export function Hero() {
             </motion.h1>
 
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">
-              Uma plataforma para encontrar serviços, embarcações, marinas, experiências e compra & venda com curadoria, regras claras e suporte humano durante toda negociação.{' '}
+              Uma plataforma para encontrar serviços, embarcações, marinas, experiências e compra & venda com curadoria,
+              regras claras e suporte humano durante toda negociação.{' '}
               <span className="text-white/85 font-semibold">Todo o mundo náutico em um só lugar</span>.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button href={process.env.NEXT_PUBLIC_APP_STORE_URL || '#o-app'}>Baixar o APP</Button>
+              <Button href={appStoreUrl}>Baixar o APP</Button>
               <Button href="#servicos" variant="ghost">
                 Explorar serviços
               </Button>
+
+              {/* abrir popup manualmente */}
+              <button
+                type="button"
+                onClick={() => setQrOpen(true)}
+                className="text-xs font-semibold tracking-wide text-white/65 hover:text-white transition sm:ml-2"
+              >
+                Ver QR Code
+              </button>
             </div>
 
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -104,6 +166,89 @@ export function Hero() {
         </div>
       </Container>
     </section>
+  )
+}
+
+function QrModal({
+  appStoreUrl,
+  onClose,
+  reduceMotion
+}: {
+  appStoreUrl: string
+  onClose: () => void
+  reduceMotion: boolean
+}) {
+  return (
+    <div className="fixed inset-0 z-[80]">
+      {/* backdrop */}
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onMouseDown={onClose}
+        aria-hidden="true"
+      />
+
+      <div className="relative mx-auto flex min-h-screen max-w-xl items-center justify-center px-4">
+        <motion.div
+          initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 10, scale: 0.98 }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="w-full rounded-3xl bg-white/5 p-5 ring-1 ring-white/12 glow"
+          onMouseDown={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Baixar app BOAT NET"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="text-[11px] font-semibold tracking-[0.22em] text-white/55">APP STORE</div>
+              <div className="mt-2 text-xl font-semibold text-white">Baixe o app BOAT NET</div>
+              <div className="mt-2 text-sm leading-relaxed text-white/70">
+                Aponte a câmera para o QR Code e baixe na App Store.
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white/80 ring-1 ring-white/10 hover:bg-white/15 transition"
+            >
+              Fechar
+            </button>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-[220px_1fr] sm:items-center">
+            <div className="mx-auto w-full max-w-[240px] rounded-3xl bg-white p-4">
+              <Image
+                src="/qr-appstore.png"
+                alt="QR Code para baixar o app"
+                width={420}
+                height={420}
+                priority
+                className="h-auto w-full"
+              />
+            </div>
+
+            <div className="text-center sm:text-left">
+              <div className="text-sm font-semibold text-white/90">Acesso rápido</div>
+              <div className="mt-2 text-sm text-white/70">
+                Se preferir, toque no botão abaixo para abrir o link direto.
+              </div>
+
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <Button href={appStoreUrl}>Baixar agora</Button>
+                <Button href="#o-app" variant="ghost" onClick={onClose as any}>
+                  Ver detalhes
+                </Button>
+              </div>
+
+              <div className="mt-4 text-[11px] text-white/55">
+                Dica: você pode fechar com <span className="font-semibold text-white/70">ESC</span>.
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
   )
 }
 
@@ -205,13 +350,25 @@ function WavesSVG() {
       </defs>
 
       <g fill="none" stroke="url(#bnWaveGrad)" strokeWidth="2">
-        <path d="M0,210 C150,150 300,270 450,210 C600,150 750,270 900,210 C1050,150 1150,250 1200,210" opacity="0.55" />
-        <path d="M0,250 C170,190 310,310 480,250 C650,190 800,310 970,250 C1090,205 1160,285 1200,250" opacity="0.38" />
-        <path d="M0,170 C160,115 320,235 480,170 C640,105 790,235 950,170 C1080,125 1160,205 1200,170" opacity="0.28" />
+        <path
+          d="M0,210 C150,150 300,270 450,210 C600,150 750,270 900,210 C1050,150 1150,250 1200,210"
+          opacity="0.55"
+        />
+        <path
+          d="M0,250 C170,190 310,310 480,250 C650,190 800,310 970,250 C1090,205 1160,285 1200,250"
+          opacity="0.38"
+        />
+        <path
+          d="M0,170 C160,115 320,235 480,170 C640,105 790,235 950,170 C1080,125 1160,205 1200,170"
+          opacity="0.28"
+        />
       </g>
 
       <g fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="1">
-        <path d="M0,290 C170,230 320,350 490,290 C660,230 820,350 990,290 C1110,245 1170,325 1200,290" opacity="0.32" />
+        <path
+          d="M0,290 C170,230 320,350 490,290 C660,230 820,350 990,290 C1110,245 1170,325 1200,290"
+          opacity="0.32"
+        />
       </g>
     </svg>
   )
