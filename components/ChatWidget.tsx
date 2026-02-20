@@ -106,61 +106,85 @@ export function ChatWidget() {
   }, [messages])
 
   async function sendMessage(text: string) {
-    const trimmed = text.trim()
-    if (!trimmed || loading) return
+  const trimmed = text.trim()
+  if (!trimmed || loading) return
 
-    setLoading(true)
-    setError(null)
+  setLoading(true)
+  setError(null)
 
-    const userMessage: ChatMsg = {
-      id: uuid(),
-      role: 'user',
-      text: trimmed,
-      ts: Date.now()
+  const userMessage: ChatMsg = {
+    id: uuid(),
+    role: 'user',
+    text: trimmed,
+    ts: Date.now()
+  }
+
+  setMessages((prev) => [...prev, userMessage])
+  setInput('')
+
+  try {
+    const response = await fetch(N8N_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: trimmed, sessionId })
+    })
+
+    if (!response.ok) {
+      throw new Error('Erro no servidor')
     }
 
-    setMessages((prev) => [...prev, userMessage])
-    setInput('')
+    let finalText = 'Sem resposta.'
 
     try {
-      const response = await fetch(N8N_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: trimmed, sessionId })
-      })
+      const data = await response.json()
 
-      const raw = await response.text()
-
-      if (!response.ok) {
-        throw new Error('Erro no servidor')
+      if (Array.isArray(data)) {
+        const first = data[0]
+        finalText =
+          first?.reply ||
+          first?.text ||
+          first?.message ||
+          'Resposta recebida.'
+      } else if (typeof data === 'object') {
+        finalText =
+          data?.reply ||
+          data?.text ||
+          data?.message ||
+          data?.output ||
+          data?.data?.reply ||
+          data?.choices?.[0]?.message?.content ||
+          'Resposta recebida.'
       }
+    } catch {
+      // Se não for JSON
+      finalText = await response.text()
+    }
 
-      const reply = safeParse(raw)
-
-      const assistantMessage: ChatMsg = {
+    setMessages((prev) => [
+      ...prev,
+      {
         id: uuid(),
         role: 'assistant',
-        text: reply,
+        text: finalText,
         ts: Date.now()
       }
-
-      setMessages((prev) => [...prev, assistantMessage])
-    } catch (err) {
-      setError('Falha de conexão.')
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: uuid(),
-          role: 'assistant',
-          text:
-            'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
-          ts: Date.now()
-        }
-      ])
-    } finally {
-      setLoading(false)
-    }
+    ])
+  } catch {
+    setError('Falha de conexão.')
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: uuid(),
+        role: 'assistant',
+        text:
+          'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
+        ts: Date.now()
+      }
+    ])
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <>
