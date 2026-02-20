@@ -107,10 +107,10 @@ export function ChatWidget() {
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // impede auto-envio repetido (loop/empilhamento)
+  // trava contra auto-envio repetido (loop)
   const lastAutoKeyRef = useRef<string>('')
 
-  const storageKey = useMemo(() => 'bn_chat_v10', [])
+  const storageKey = useMemo(() => 'bn_chat_v11', [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -131,7 +131,7 @@ export function ChatWidget() {
         {
           id: uuid(),
           role: 'assistant',
-          text: 'BoatNet Concierge online. Passeios, marinas, aluguel ou compra. Como posso ajudar?',
+          text: 'Atendimento IA BoatNet online. Como posso ajudar?',
           ts: Date.now()
         }
       ])
@@ -151,7 +151,7 @@ export function ChatWidget() {
 
   useEffect(() => {
     if (!isOpen) return
-    const t = window.setTimeout(() => inputRef.current?.focus(), 150)
+    const t = window.setTimeout(() => inputRef.current?.focus(), 120)
     return () => window.clearTimeout(t)
   }, [isOpen])
 
@@ -166,14 +166,13 @@ export function ChatWidget() {
       {
         id: uuid(),
         role: 'assistant',
-        text: 'BoatNet Concierge online. Como posso ajudar?',
+        text: 'Atendimento IA BoatNet online. Como posso ajudar?',
         ts: Date.now()
       }
     ])
     if (typeof window !== 'undefined') localStorage.removeItem(storageKey)
   }
 
-  // API global (compatível com preset string do global.d.ts)
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -193,19 +192,16 @@ export function ChatWidget() {
     const text = presetText(preset)
     if (!text) return
 
-    // chave única por session+preset para impedir repetição infinita
     const autoKey = `${sessionId}:${preset}`
     if (lastAutoKeyRef.current === autoKey) return
     lastAutoKeyRef.current = autoKey
 
-    // adiciona a msg do usuário (1x) e envia
     setMessages((prev) => {
       const already = prev.slice(-10).some((m) => m.role === 'user' && m.text === text)
       if (already) return prev
       return [...prev, { id: uuid(), role: 'user', text, ts: Date.now() }]
     })
 
-    // envia sem duplicar novamente a msg
     window.setTimeout(() => {
       sendMessage(text, { silentAppendUser: true })
     }, 0)
@@ -214,10 +210,6 @@ export function ChatWidget() {
   async function sendMessage(text: string, opts?: { silentAppendUser?: boolean }) {
     const trimmed = text.trim()
     if (!trimmed || loading) return
-
-    // anti double submit: se o último user for igual, não reenvia
-    const last = messages[messages.length - 1]
-    if (!opts?.silentAppendUser && last?.role === 'user' && last.text === trimmed) return
 
     setLoading(true)
     setError(null)
@@ -269,30 +261,47 @@ export function ChatWidget() {
 
   return (
     <>
-      {/* FAB */}
+      {/* FAB moderno com “LED” */}
       <button
         onClick={() => {
           setIsOpen(true)
           setError(null)
-          // não injeta preset automático aqui
+          // ao abrir manualmente, não injeta preset
           lastAutoKeyRef.current = ''
           window.setTimeout(() => inputRef.current?.focus(), 0)
         }}
         className={[
-          'fixed z-50 shadow-lg',
+          'fixed z-50 shadow-2xl',
           'right-4 bottom-4 sm:right-6 sm:bottom-6',
           'rounded-full bg-brand-blue text-white',
           'px-5 py-3 sm:px-6 sm:py-3',
-          'text-sm font-semibold'
+          'text-sm font-semibold',
+          'flex items-center gap-3',
+          'transition hover:scale-[1.02] active:scale-[0.98]'
         ].join(' ')}
-        aria-label="Abrir BoatNet Concierge"
+        aria-label="Abrir Atendimento IA"
       >
-        {isOpen ? 'Aberto' : 'Concierge'}
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80 opacity-60" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+        </span>
+
+        <span className="animate-[bnFloat_2.8s_ease-in-out_infinite]">
+          {isOpen ? 'Atendimento IA' : 'Atendimento IA'}
+        </span>
+
+        <style jsx>{`
+          @keyframes bnFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+            100% { transform: translateY(0px); }
+          }
+        `}</style>
       </button>
 
       {isOpen && (
         <>
-          {/* Overlay (mobile + desktop) */}
+          {/* Overlay */}
           <div
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px] sm:bg-black/40"
             onClick={() => setIsOpen(false)}
@@ -312,8 +321,8 @@ export function ChatWidget() {
               {/* Header */}
               <div className="flex items-center justify-between border-b border-white/10 px-4 py-4 sm:px-5">
                 <div>
-                  <div className="text-white font-semibold leading-none">BoatNet Concierge</div>
-                  <div className="text-xs text-white/50 mt-1">Curadoria • Reservas • Confiança</div>
+                  <div className="text-white font-semibold leading-none">Atendimento IA</div>
+                  <div className="text-xs text-white/50 mt-1">BoatNet • Curadoria • Reservas</div>
                 </div>
 
                 <div className="flex items-center gap-2">
