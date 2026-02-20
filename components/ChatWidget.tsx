@@ -19,50 +19,73 @@ function uuid(): string {
   return Date.now().toString() + Math.random().toString(16).slice(2)
 }
 
-function safeParse(raw: string): string {
+/**
+ * Extrai texto final da resposta da IA.
+ * Aceita:
+ * - texto puro
+ * - { reply: "" }
+ * - { text: "" }
+ * - array [ { reply: "" } ]
+ * - openai style
+ */
+function extractAIText(raw: string): string {
   if (!raw) return 'Sem resposta.'
 
-  try {
-    const parsed = JSON.parse(raw)
+  const trimmed = raw.trim()
 
+  try {
+    const parsed = JSON.parse(trimmed)
+
+    // Caso array
     if (Array.isArray(parsed)) {
       const first = parsed[0]
-      return first?.reply || first?.text || first?.message || 'Resposta recebida.'
+      return (
+        first?.reply ||
+        first?.text ||
+        first?.message ||
+        first?.output ||
+        trimmed
+      )
     }
 
-    return (
-      parsed?.reply ||
-      parsed?.text ||
-      parsed?.message ||
-      parsed?.output ||
-      parsed?.data?.reply ||
-      parsed?.choices?.[0]?.message?.content ||
-      'Resposta recebida.'
-    )
+    // Caso objeto
+    if (typeof parsed === 'object') {
+      return (
+        parsed?.reply ||
+        parsed?.text ||
+        parsed?.message ||
+        parsed?.output ||
+        parsed?.data?.reply ||
+        parsed?.choices?.[0]?.message?.content ||
+        trimmed
+      )
+    }
+
+    return trimmed
   } catch {
-    return raw
+    // Não é JSON
+    return trimmed
   }
 }
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
-  const [sessionId, setSessionId] = useState<string>('')
+  const [sessionId, setSessionId] = useState('')
   const [messages, setMessages] = useState<ChatMsg[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const listRef = useRef<HTMLDivElement>(null)
-
-  const storageKey = useMemo(() => 'bn_chat_v6', [])
+  const storageKey = useMemo(() => 'bn_chat_v7', [])
 
   // INIT
   useEffect(() => {
     if (typeof window === 'undefined') return
 
     const raw = localStorage.getItem(storageKey)
-
     let parsed: any = null
+
     if (raw) {
       try {
         parsed = JSON.parse(raw)
@@ -98,7 +121,7 @@ export function ChatWidget() {
     )
   }, [sessionId, messages, storageKey])
 
-  // AUTO SCROLL
+  // SCROLL
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight
@@ -106,85 +129,63 @@ export function ChatWidget() {
   }, [messages])
 
   async function sendMessage(text: string) {
-  const trimmed = text.trim()
-  if (!trimmed || loading) return
+    const trimmed = text.trim()
+    if (!trimmed || loading) return
 
-  setLoading(true)
-  setError(null)
+    setLoading(true)
+    setError(null)
 
-  const userMessage: ChatMsg = {
-    id: uuid(),
-    role: 'user',
-    text: trimmed,
-    ts: Date.now()
-  }
-
-  setMessages((prev) => [...prev, userMessage])
-  setInput('')
-
-  try {
-    const response = await fetch(N8N_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: trimmed, sessionId })
-    })
-
-    if (!response.ok) {
-      throw new Error('Erro no servidor')
+    const userMsg: ChatMsg = {
+      id: uuid(),
+      role: 'user',
+      text: trimmed,
+      ts: Date.now()
     }
 
-    let finalText = 'Sem resposta.'
+    setMessages((prev) => [...prev, userMsg])
+    setInput('')
 
     try {
-      const data = await response.json()
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmed, sessionId })
+      })
 
-      if (Array.isArray(data)) {
-        const first = data[0]
-        finalText =
-          first?.reply ||
-          first?.text ||
-          first?.message ||
-          'Resposta recebida.'
-      } else if (typeof data === 'object') {
-        finalText =
-          data?.reply ||
-          data?.text ||
-          data?.message ||
-          data?.output ||
-          data?.data?.reply ||
-          data?.choices?.[0]?.message?.content ||
-          'Resposta recebida.'
+      if (!response.ok) {
+        throw new Error('Erro no servidor')
       }
-    } catch {
-      // Se não for JSON
-      finalText = await response.text()
+
+      // 🔥 LER UMA ÚNICA VEZ
+      const rawText = await response.text()
+
+      const finalText = extractAIText(rawText)
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: uuid(),
+          role: 'assistant',
+          text: finalText,
+          ts: Date.now()
+        }
+      ])
+    } catch (err) {
+      setError('Falha de conexão.')
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: uuid(),
+          role: 'assistant',
+          text:
+            'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
+          ts: Date.now()
+        }
+      ])
+    } finally {
+      setLoading(false)
     }
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: uuid(),
-        role: 'assistant',
-        text: finalText,
-        ts: Date.now()
-      }
-    ])
-  } catch {
-    setError('Falha de conexão.')
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: uuid(),
-        role: 'assistant',
-        text:
-          'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
-        ts: Date.now()
-      }
-    ])
-  } finally {
-    setLoading(false)
   }
-}
 
   return (
     <>
