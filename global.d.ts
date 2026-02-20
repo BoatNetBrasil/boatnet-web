@@ -1,11 +1,9 @@
 export {}
 
 declare global {
-  type Preset = 'default' | 'partner' | 'booking' | 'support'
-
   interface Window {
     BNChat?: {
-      open: (args?: { preset?: Preset }) => void
+      open: (args?: { preset?: string }) => void
       close: () => void
       reset: () => void
     }
