@@ -13,59 +13,86 @@ const N8N_WEBHOOK_URL =
   'https://n8n.kevinventuracomercial.net/webhook/ee58f15d-9584-4004-ab9f-2dc1c3052fdf'
 
 function uuid(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID()
-  }
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
   return Date.now().toString() + Math.random().toString(16).slice(2)
 }
 
+function tryJsonParse(input: string): any | null {
+  try {
+    return JSON.parse(input)
+  } catch {
+    return null
+  }
+}
+
 /**
- * Extrai texto final da resposta da IA.
- * Aceita:
+ * Extrai APENAS o conteúdo textual final da resposta do n8n/IA.
+ * Suporta:
  * - texto puro
- * - { reply: "" }
- * - { text: "" }
- * - array [ { reply: "" } ]
- * - openai style
+ * - { response: "..." }
+ * - { reply: "..." }
+ * - { text: "..." }
+ * - { message: "..." }
+ * - { output: "..." }
+ * - { data: { reply/text/message } }
+ * - array [ { ... } ]
+ * - OpenAI style choices[0].message.content
+ * - JSON “duplamente serializado” (string que contém JSON)
  */
 function extractAIText(raw: string): string {
-  if (!raw) return 'Sem resposta.'
+  const trimmed = (raw ?? '').trim()
+  if (!trimmed) return 'Sem resposta.'
 
-  const trimmed = raw.trim()
+  // 1) tenta parse direto
+  let parsed = tryJsonParse(trimmed)
 
-  try {
-    const parsed = JSON.parse(trimmed)
-
-    // Caso array
-    if (Array.isArray(parsed)) {
-      const first = parsed[0]
-      return (
-        first?.reply ||
-        first?.text ||
-        first?.message ||
-        first?.output ||
-        trimmed
-      )
-    }
-
-    // Caso objeto
-    if (typeof parsed === 'object') {
-      return (
-        parsed?.reply ||
-        parsed?.text ||
-        parsed?.message ||
-        parsed?.output ||
-        parsed?.data?.reply ||
-        parsed?.choices?.[0]?.message?.content ||
-        trimmed
-      )
-    }
-
-    return trimmed
-  } catch {
-    // Não é JSON
-    return trimmed
+  // 2) se veio como string JSON dentro de string, parse de novo
+  if (typeof parsed === 'string') {
+    const parsed2 = tryJsonParse(parsed.trim())
+    if (parsed2 !== null) parsed = parsed2
   }
+
+  // 3) se não é JSON, é texto puro
+  if (parsed === null) return trimmed
+
+  // 4) se é array
+  if (Array.isArray(parsed)) {
+    const first = parsed[0]
+    if (typeof first === 'string') return first
+    return (
+      first?.response ||
+      first?.reply ||
+      first?.text ||
+      first?.message ||
+      first?.output ||
+      first?.data?.response ||
+      first?.data?.reply ||
+      first?.data?.text ||
+      first?.data?.message ||
+      first?.choices?.[0]?.message?.content ||
+      trimmed
+    )
+  }
+
+  // 5) se é objeto
+  if (typeof parsed === 'object') {
+    return (
+      parsed?.response ||
+      parsed?.reply ||
+      parsed?.text ||
+      parsed?.message ||
+      parsed?.output ||
+      parsed?.data?.response ||
+      parsed?.data?.reply ||
+      parsed?.data?.text ||
+      parsed?.data?.message ||
+      parsed?.choices?.[0]?.message?.content ||
+      trimmed
+    )
+  }
+
+  // 6) fallback
+  return String(parsed)
 }
 
 export function ChatWidget() {
@@ -77,7 +104,7 @@ export function ChatWidget() {
   const [error, setError] = useState<string | null>(null)
 
   const listRef = useRef<HTMLDivElement>(null)
-  const storageKey = useMemo(() => 'bn_chat_v7', [])
+  const storageKey = useMemo(() => 'bn_chat_v8', [])
 
   // INIT
   useEffect(() => {
@@ -87,9 +114,7 @@ export function ChatWidget() {
     let parsed: any = null
 
     if (raw) {
-      try {
-        parsed = JSON.parse(raw)
-      } catch {}
+      parsed = tryJsonParse(raw)
     }
 
     const sid = parsed?.sessionId || uuid()
@@ -102,8 +127,7 @@ export function ChatWidget() {
         {
           id: uuid(),
           role: 'assistant',
-          text:
-            'BoatNet Concierge online. Passeios, marinas, aluguel ou compra. Como posso ajudar?',
+          text: 'BoatNet Concierge online. Passeios, marinas, aluguel ou compra. Como posso ajudar?',
           ts: Date.now()
         }
       ])
@@ -114,18 +138,13 @@ export function ChatWidget() {
   useEffect(() => {
     if (!sessionId) return
     if (typeof window === 'undefined') return
+    localStorage.setItem(storageKey, JSON.stringify({ sessionId, messages }))
+  }, [storageKey, sessionId, messages])
 
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify({ sessionId, messages })
-    )
-  }, [sessionId, messages, storageKey])
-
-  // SCROLL
+  // AUTO SCROLL
   useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollTop = listRef.current.scrollHeight
-    }
+    if (!listRef.current) return
+    listRef.current.scrollTop = listRef.current.scrollHeight
   }, [messages])
 
   async function sendMessage(text: string) {
@@ -152,12 +171,11 @@ export function ChatWidget() {
         body: JSON.stringify({ message: trimmed, sessionId })
       })
 
-      if (!response.ok) {
-        throw new Error('Erro no servidor')
-      }
-
-      // 🔥 LER UMA ÚNICA VEZ
       const rawText = await response.text()
+
+      if (!response.ok) {
+        throw new Error(rawText || 'Erro no servidor')
+      }
 
       const finalText = extractAIText(rawText)
 
@@ -170,15 +188,14 @@ export function ChatWidget() {
           ts: Date.now()
         }
       ])
-    } catch (err) {
+    } catch {
       setError('Falha de conexão.')
       setMessages((prev) => [
         ...prev,
         {
           id: uuid(),
           role: 'assistant',
-          text:
-            'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
+          text: 'Estamos temporariamente indisponíveis. Tente novamente em instantes.',
           ts: Date.now()
         }
       ])
@@ -202,20 +219,12 @@ export function ChatWidget() {
             BoatNet Concierge
           </div>
 
-          <div
-            ref={listRef}
-            className="max-h-[420px] overflow-y-auto px-5 py-4 space-y-4"
-          >
+          <div ref={listRef} className="max-h-[420px] overflow-y-auto px-5 py-4 space-y-4">
             {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={msg.role === 'user' ? 'text-right' : 'text-left'}
-              >
+              <div key={msg.id} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
                 <div
                   className={`inline-block max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
-                    msg.role === 'user'
-                      ? 'bg-brand-blue text-white'
-                      : 'bg-white/5 text-white'
+                    msg.role === 'user' ? 'bg-brand-blue text-white' : 'bg-white/5 text-white'
                   }`}
                 >
                   {msg.text}
@@ -231,9 +240,7 @@ export function ChatWidget() {
               </div>
             )}
 
-            {error && (
-              <div className="text-xs text-red-400">{error}</div>
-            )}
+            {error && <div className="text-xs text-red-400">{error}</div>}
           </div>
 
           <form
