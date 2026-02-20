@@ -238,9 +238,7 @@ function QrModal({
                 </a>
               </div>
 
-              <div className="mt-4 text-[11px] text-white/55">
-                Dica: feche com <span className="font-semibold text-white/70">ESC</span>.
-              </div>
+              
             </div>
           </div>
         </motion.div>
