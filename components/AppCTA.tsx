@@ -47,7 +47,7 @@ export function AppCTA() {
 
   return (
     <section id="o-app" className="py-16 sm:py-20">
-      {/* Chat flutuante no lugar do WhatsApp */}
+      {/* Chat flutuante */}
       <ChatWidget />
 
       <Container>
@@ -75,6 +75,13 @@ export function AppCTA() {
               >
                 Virar parceiro
               </GhostButton>
+
+              <GhostButton
+                ariaLabel="Quero reservar (abre o chat)"
+                onClick={() => window.BNChat?.open({ preset: 'booking' })}
+              >
+                Reservar agora
+              </GhostButton>
             </div>
 
             <div className="mt-8 rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 glow">
@@ -101,7 +108,6 @@ export function AppCTA() {
           {/* RIGHT */}
           <Reveal delay={0.08}>
             <div className="relative mx-auto w-[320px] sm:w-[360px]">
-              {/* subtle bg aura */}
               <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[36px] bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.25),transparent_55%),radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.08),transparent_55%)] blur-2xl" />
 
               <Image
