@@ -11,16 +11,6 @@ type ChatMsg = {
 
 type Preset = 'default' | 'partner' | 'booking' | 'support'
 
-declare global {
-  interface Window {
-    BNChat?: {
-      open: (args?: { preset?: Preset }) => void
-      close: () => void
-      reset: () => void
-    }
-  }
-}
-
 const N8N_WEBHOOK_URL =
   'https://n8n.kevinventuracomercial.net/webhook/ee58f15d-9584-4004-ab9f-2dc1c3052fdf'
 
@@ -39,7 +29,7 @@ function tryJsonParse(input: string): any | null {
 
 function extractAIText(raw: string): string {
   const trimmed = (raw ?? '').trim()
-  if (!trimmed) return 'Sem resposta.'
+  if (!trimmed) return 'Ok.'
 
   let parsed = tryJsonParse(trimmed)
 
@@ -52,7 +42,7 @@ function extractAIText(raw: string): string {
 
   if (Array.isArray(parsed)) {
     const first = parsed[0]
-    if (typeof first === 'string') return first
+    if (typeof first === 'string') return first.trim() || 'Ok.'
     return (
       first?.response ||
       first?.reply ||
@@ -65,7 +55,7 @@ function extractAIText(raw: string): string {
       first?.data?.message ||
       first?.choices?.[0]?.message?.content ||
       trimmed
-    )
+    ).trim?.() || 'Ok.'
   }
 
   if (typeof parsed === 'object') {
@@ -81,10 +71,15 @@ function extractAIText(raw: string): string {
       parsed?.data?.message ||
       parsed?.choices?.[0]?.message?.content ||
       trimmed
-    )
+    ).trim?.() || 'Ok.'
   }
 
-  return String(parsed)
+  return String(parsed).trim() || 'Ok.'
+}
+
+function normalizePreset(preset?: string): Preset {
+  if (preset === 'partner' || preset === 'booking' || preset === 'support') return preset
+  return 'default'
 }
 
 function presetText(preset: Preset): string {
@@ -94,7 +89,7 @@ function presetText(preset: Preset): string {
     case 'booking':
       return 'Quero reservar um passeio/aluguel. Me ajude a encontrar opções por cidade, data e orçamento.'
     case 'support':
-      return 'Preciso de suporte. Explique o que você precisa de mim (pedido, pagamento, parceiro, etc.).'
+      return 'Preciso de suporte. Como resolver meu caso?'
     default:
       return ''
   }
@@ -112,9 +107,11 @@ export function ChatWidget() {
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const storageKey = useMemo(() => 'bn_chat_v9', [])
+  // impede auto-envio repetido (loop/empilhamento)
+  const lastAutoKeyRef = useRef<string>('')
 
-  // INIT
+  const storageKey = useMemo(() => 'bn_chat_v10', [])
+
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -123,7 +120,9 @@ export function ChatWidget() {
 
     const sid = parsed?.sessionId || uuid()
     setSessionId(sid)
-    setActivePreset(parsed?.activePreset || 'default')
+
+    const p = normalizePreset(parsed?.activePreset)
+    setActivePreset(p)
 
     if (parsed?.messages?.length) {
       setMessages(parsed.messages)
@@ -139,55 +138,22 @@ export function ChatWidget() {
     }
   }, [storageKey])
 
-  // Persist
   useEffect(() => {
     if (!sessionId) return
     if (typeof window === 'undefined') return
     localStorage.setItem(storageKey, JSON.stringify({ sessionId, messages, activePreset }))
   }, [storageKey, sessionId, messages, activePreset])
 
-  // Scroll
   useEffect(() => {
     if (!listRef.current) return
     listRef.current.scrollTop = listRef.current.scrollHeight
   }, [messages, loading])
 
-  // Focus input on open
   useEffect(() => {
     if (!isOpen) return
     const t = window.setTimeout(() => inputRef.current?.focus(), 150)
     return () => window.clearTimeout(t)
   }, [isOpen])
-
-  function openWithPreset(preset: Preset = 'default') {
-    setIsOpen(true)
-    setError(null)
-    setActivePreset(preset)
-
-    const t = presetText(preset)
-    if (!t) return
-
-    // injeta somente uma vez por abertura/preset (sem duplicar)
-    setMessages((prev) => {
-      const last = prev[prev.length - 1]
-      const already = prev.slice(-6).some((m) => m.role === 'user' && m.text === t)
-      if (already) return prev
-      return [
-        ...prev,
-        {
-          id: uuid(),
-          role: 'user',
-          text: t,
-          ts: Date.now()
-        }
-      ]
-    })
-
-    // dispara envio automático do preset
-    window.setTimeout(() => {
-      sendMessage(t, { silentAppendUser: true })
-    }, 0)
-  }
 
   function resetChat() {
     const sid = uuid()
@@ -195,6 +161,7 @@ export function ChatWidget() {
     setActivePreset('default')
     setError(null)
     setInput('')
+    lastAutoKeyRef.current = ''
     setMessages([
       {
         id: uuid(),
@@ -206,27 +173,57 @@ export function ChatWidget() {
     if (typeof window !== 'undefined') localStorage.removeItem(storageKey)
   }
 
-  // Expor API global p/ CTA
+  // API global (compatível com preset string do global.d.ts)
   useEffect(() => {
     if (typeof window === 'undefined') return
+
     window.BNChat = {
-      open: (args?: { preset?: Preset }) => openWithPreset(args?.preset || 'default'),
+      open: (args?: { preset?: string }) => openPreset(normalizePreset(args?.preset)),
       close: () => setIsOpen(false),
       reset: () => resetChat()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId])
 
+  function openPreset(preset: Preset) {
+    setIsOpen(true)
+    setError(null)
+    setActivePreset(preset)
+
+    const text = presetText(preset)
+    if (!text) return
+
+    // chave única por session+preset para impedir repetição infinita
+    const autoKey = `${sessionId}:${preset}`
+    if (lastAutoKeyRef.current === autoKey) return
+    lastAutoKeyRef.current = autoKey
+
+    // adiciona a msg do usuário (1x) e envia
+    setMessages((prev) => {
+      const already = prev.slice(-10).some((m) => m.role === 'user' && m.text === text)
+      if (already) return prev
+      return [...prev, { id: uuid(), role: 'user', text, ts: Date.now() }]
+    })
+
+    // envia sem duplicar novamente a msg
+    window.setTimeout(() => {
+      sendMessage(text, { silentAppendUser: true })
+    }, 0)
+  }
+
   async function sendMessage(text: string, opts?: { silentAppendUser?: boolean }) {
     const trimmed = text.trim()
     if (!trimmed || loading) return
+
+    // anti double submit: se o último user for igual, não reenvia
+    const last = messages[messages.length - 1]
+    if (!opts?.silentAppendUser && last?.role === 'user' && last.text === trimmed) return
 
     setLoading(true)
     setError(null)
 
     if (!opts?.silentAppendUser) {
-      const userMsg: ChatMsg = { id: uuid(), role: 'user', text: trimmed, ts: Date.now() }
-      setMessages((prev) => [...prev, userMsg])
+      setMessages((prev) => [...prev, { id: uuid(), role: 'user', text: trimmed, ts: Date.now() }])
       setInput('')
     }
 
@@ -243,15 +240,11 @@ export function ChatWidget() {
       })
 
       const rawText = await response.text()
-
       if (!response.ok) throw new Error(rawText || 'Erro no servidor')
 
       const finalText = extractAIText(rawText)
 
-      setMessages((prev) => [
-        ...prev,
-        { id: uuid(), role: 'assistant', text: finalText, ts: Date.now() }
-      ])
+      setMessages((prev) => [...prev, { id: uuid(), role: 'assistant', text: finalText, ts: Date.now() }])
     } catch {
       setError('Falha de conexão.')
       setMessages((prev) => [
@@ -268,17 +261,23 @@ export function ChatWidget() {
     }
   }
 
-  const quickActions: { label: string; preset: Preset; text: string }[] = [
-    { label: 'Passeio / Aluguel', preset: 'booking', text: presetText('booking') },
-    { label: 'Virar parceiro', preset: 'partner', text: presetText('partner') },
-    { label: 'Suporte', preset: 'support', text: presetText('support') }
+  const quickActions: { label: string; preset: Preset }[] = [
+    { label: 'Passeio / Aluguel', preset: 'booking' },
+    { label: 'Marina / Parceiro', preset: 'partner' },
+    { label: 'Suporte', preset: 'support' }
   ]
 
   return (
     <>
       {/* FAB */}
       <button
-        onClick={() => openWithPreset('default')}
+        onClick={() => {
+          setIsOpen(true)
+          setError(null)
+          // não injeta preset automático aqui
+          lastAutoKeyRef.current = ''
+          window.setTimeout(() => inputRef.current?.focus(), 0)
+        }}
         className={[
           'fixed z-50 shadow-lg',
           'right-4 bottom-4 sm:right-6 sm:bottom-6',
@@ -291,131 +290,123 @@ export function ChatWidget() {
         {isOpen ? 'Aberto' : 'Concierge'}
       </button>
 
-      {/* MODAL / PANEL */}
       {isOpen && (
-        <div
-          className={[
-            'fixed z-50',
-            // Mobile full-screen
-            'inset-0 sm:inset-auto',
-            // Desktop floating
-            'sm:bottom-24 sm:right-6',
-            'sm:w-[420px]',
-            // Mobile padding to avoid notch
-            'pt-[env(safe-area-inset-top)] sm:pt-0'
-          ].join(' ')}
-        >
+        <>
+          {/* Overlay (mobile + desktop) */}
+          <div
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px] sm:bg-black/40"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Panel */}
           <div
             className={[
-              'h-full sm:h-auto',
-              'rounded-none sm:rounded-2xl',
-              'bg-neutral-950 border border-white/10 shadow-2xl',
-              'flex flex-col'
+              'fixed z-50',
+              'inset-0 sm:inset-auto',
+              'sm:bottom-24 sm:right-6 sm:w-[420px]',
+              'pt-[env(safe-area-inset-top)] sm:pt-0'
             ].join(' ')}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-4 sm:px-5">
-              <div>
-                <div className="text-white font-semibold leading-none">BoatNet Concierge</div>
-                <div className="text-xs text-white/50 mt-1">
-                  Curadoria • Reservas • Confiança
+            <div className="h-full sm:h-auto rounded-none sm:rounded-2xl bg-neutral-950 border border-white/10 shadow-2xl flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-white/10 px-4 py-4 sm:px-5">
+                <div>
+                  <div className="text-white font-semibold leading-none">BoatNet Concierge</div>
+                  <div className="text-xs text-white/50 mt-1">Curadoria • Reservas • Confiança</div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={resetChat}
-                  className="text-xs rounded-full bg-white/5 px-3 py-1.5 text-white/80 hover:bg-white/10"
-                >
-                  Reset
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="text-xs rounded-full bg-brand-blue px-3 py-1.5 text-white hover:opacity-90"
-                >
-                  Fechar
-                </button>
-              </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="px-4 sm:px-5 pt-3">
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {quickActions.map((a) => (
+                <div className="flex items-center gap-2">
                   <button
-                    key={a.label}
                     type="button"
-                    onClick={() => openWithPreset(a.preset)}
-                    className="shrink-0 rounded-full bg-white/5 px-4 py-2 text-xs font-semibold text-white/85 ring-1 ring-white/10 hover:bg-white/10"
+                    onClick={resetChat}
+                    className="text-xs rounded-full bg-white/5 px-3 py-1.5 text-white/80 hover:bg-white/10"
                   >
-                    {a.label}
+                    Reset
                   </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Messages */}
-            <div
-              ref={listRef}
-              className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-3"
-            >
-              {messages.map((m) => (
-                <div key={m.id} className={m.role === 'user' ? 'text-right' : 'text-left'}>
-                  <div
-                    className={[
-                      'inline-block max-w-[86%] rounded-2xl px-4 py-2 text-sm leading-relaxed',
-                      m.role === 'user' ? 'bg-brand-blue text-white' : 'bg-white/5 text-white'
-                    ].join(' ')}
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="text-xs rounded-full bg-brand-blue px-3 py-1.5 text-white hover:opacity-90"
                   >
-                    {m.text}
-                  </div>
+                    Fechar
+                  </button>
                 </div>
-              ))}
+              </div>
 
-              {loading && (
-                <div className="text-left">
-                  <div className="inline-block bg-white/5 text-white rounded-2xl px-4 py-2 text-sm animate-pulse">
-                    Digitando...
-                  </div>
+              {/* Quick actions */}
+              <div className="px-4 sm:px-5 pt-3">
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {quickActions.map((a) => (
+                    <button
+                      key={a.label}
+                      type="button"
+                      onClick={() => openPreset(a.preset)}
+                      className="shrink-0 rounded-full bg-white/5 px-4 py-2 text-xs font-semibold text-white/85 ring-1 ring-white/10 hover:bg-white/10"
+                    >
+                      {a.label}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
 
-              {error && <div className="text-xs text-red-400">{error}</div>}
-            </div>
+              {/* Messages */}
+              <div ref={listRef} className="flex-1 overflow-y-auto px-4 sm:px-5 py-4 space-y-3">
+                {messages.map((m) => (
+                  <div key={m.id} className={m.role === 'user' ? 'text-right' : 'text-left'}>
+                    <div
+                      className={[
+                        'inline-block max-w-[86%] rounded-2xl px-4 py-2 text-sm leading-relaxed',
+                        m.role === 'user' ? 'bg-brand-blue text-white' : 'bg-white/5 text-white'
+                      ].join(' ')}
+                    >
+                      {m.text}
+                    </div>
+                  </div>
+                ))}
 
-            {/* Input */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                sendMessage(input)
-              }}
-              className={[
-                'border-t border-white/10',
-                'px-4 sm:px-5 py-4',
-                'pb-[calc(16px+env(safe-area-inset-bottom))] sm:pb-4',
-                'flex gap-3'
-              ].join(' ')}
-            >
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Digite sua mensagem..."
-                className="flex-1 rounded-xl bg-white/5 px-4 py-3 text-white outline-none placeholder:text-white/30"
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="rounded-xl bg-brand-blue px-5 py-3 text-white font-semibold disabled:opacity-50"
+                {loading && (
+                  <div className="text-left">
+                    <div className="inline-block bg-white/5 text-white rounded-2xl px-4 py-2 text-sm animate-pulse">
+                      Digitando...
+                    </div>
+                  </div>
+                )}
+
+                {error && <div className="text-xs text-red-400">{error}</div>}
+              </div>
+
+              {/* Input */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  sendMessage(input)
+                }}
+                className={[
+                  'border-t border-white/10',
+                  'px-4 sm:px-5 py-4',
+                  'pb-[calc(16px+env(safe-area-inset-bottom))] sm:pb-4',
+                  'flex gap-3'
+                ].join(' ')}
               >
-                Enviar
-              </button>
-            </form>
+                <input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Digite sua mensagem..."
+                  className="flex-1 rounded-xl bg-white/5 px-4 py-3 text-white outline-none placeholder:text-white/30"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-xl bg-brand-blue px-5 py-3 text-white font-semibold disabled:opacity-50"
+                >
+                  Enviar
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   )
