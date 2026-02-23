@@ -19,7 +19,7 @@ const items = [
   },
   {
     title: 'Compra & Venda',
-    desc: 'Leads qualificados — sem bagunça. Chat, prova social e conversão.',
+    desc: 'Leads qualificados sem bagunça. Chat, prova social e conversão.',
     icon: Store,
     meta: 'leads • confiança • conversão'
   },
@@ -50,7 +50,7 @@ export function Servicos() {
         <Reveal>
           <SectionHeader
             kicker="Serviços"
-            title="Tudo que importa no náutico — por intenção"
+            title="Soluções náuticas para cada necessidade"
             subtitle="O site apresenta. O app resolve: curadoria, reservas, pagamentos e avaliações."
           />
         </Reveal>
