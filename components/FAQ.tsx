@@ -9,7 +9,7 @@ import { ChevronDown } from 'lucide-react'
 const faqs = [
   {
     q: 'O que é a BOAT NET?',
-    a: 'Uma plataforma para organizar a náutica em um só lugar: serviços, marinas, experiências e compra & venda — com curadoria, reservas e avaliações no app.'
+    a: 'Uma plataforma para organizar a náutica em um só lugar: serviços, marinas, experiências e compra & venda com curadoria, reservas e avaliações no app.'
   },
   {
     q: 'Como faço uma reserva?',
@@ -17,25 +17,25 @@ const faqs = [
   },
   {
     q: 'Onde acontece o pagamento?',
-    a: 'No app. Lá ficam pagamento, comprovantes, histórico e o acompanhamento completo da reserva.'
+    a: 'O pagamento é feito dentro do app, onde também ficam seus comprovantes, histórico e todos os detalhes da reserva.'
   },
   {
     q: 'Vocês oferecem suporte de verdade?',
-    a: 'Sim. Suporte 24h com pessoas reais, ao vivo, para acompanhar sua reserva e resolver com agilidade.'
+    a: 'Oferecemos suporte 24h com atendimento real, ao vivo. Nossa equipe acompanha sua reserva e ajuda sempre que precisar.'
   },
   {
     q: 'Como virar parceiro (marina, operador ou loja)?',
-    a: 'Preencha o formulário de parceiros. A equipe valida sua operação e entra em contato com o próximo passo do onboarding.'
+    a: 'Basta preencher o formulário de parceiros. Nossa equipe analisa sua operação e entra em contato para os próximos passos.'
   },
   {
     q: 'Consigo acompanhar minha reserva?',
-    a: 'Sim. No app você acompanha status, mensagens, orientações e histórico — do início ao fim.'
+    a: 'Sim, no app você acompanha status, mensagens, orientações e histórico do início ao fim.'
   },
   {
     q: 'A BOAT NET verifica parceiros?',
-    a: 'Sim. Parceiros passam por validação e seguem um padrão de operação e atendimento para garantir consistência.'
+    a: 'Para garantir segurança e qualidade, todos os parceiros passam por validação e seguem um padrão de operação e atendimento.'
   },
-  {
+  { 
     q: 'O que o site faz e o que o app faz?',
     a: 'O site apresenta o ecossistema e guia sua decisão. O app executa: reservas, pagamento, comprovantes, suporte e avaliações.'
   }
