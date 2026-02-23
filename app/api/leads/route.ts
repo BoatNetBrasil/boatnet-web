@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { validateLead } from '@/lib/validate'
 import crypto from 'crypto'
-import { promises as fs } from 'fs'
-import path from 'path'
+import { PutCommand } from '@aws-sdk/lib-dynamodb'
+import { ddb } from '@/lib/ddb'
 
 export const runtime = 'nodejs'
 
@@ -32,6 +32,11 @@ function rateLimit(ip: string) {
 }
 
 export async function POST(req: Request) {
+  const table = process.env.LEADS_TABLE
+  if (!table) {
+    return NextResponse.json({ ok: false, error: 'LEADS_TABLE não configurado' }, { status: 500 })
+  }
+
   const ip = getIP(req)
   if (!rateLimit(ip).ok) {
     return NextResponse.json({ ok: false, error: 'muitas tentativas' }, { status: 429 })
@@ -54,35 +59,49 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true }, { status: 200 })
   }
 
-  const baseDir = process.cwd()
-  const file = path.join(baseDir, 'data', 'leads.ndjson')
-
-  // idempotência local (dev): hash de leadId
+  // idempotência: hash de leadId (mantém o seu comportamento atual)
   const id = crypto.createHash('sha256').update(v.data.leadId).digest('hex')
-  const line = JSON.stringify({
+  const receivedAt = new Date().toISOString()
+
+  // item final (salva exatamente o que já existe hoje)
+  const item = {
+    pk: `LEAD#${id}`,
+    sk: receivedAt,
+
     id,
-    receivedAt: new Date().toISOString(),
+    receivedAt,
     ip,
-    ...v.data
-  }) + '\n'
+
+    ...v.data,
+
+    status: 'new',
+    source: 'site',
+
+    // índice por tipo (se você criou o GSI)
+    gsi1pk: `TYPE#${v.data.type}`,
+    gsi1sk: `${receivedAt}#${id}`
+  }
 
   try {
-    // garante pasta
-    await fs.mkdir(path.dirname(file), { recursive: true })
+    await ddb.send(
+      new PutCommand({
+        TableName: table,
+        Item: item,
+        // evita duplicar o mesmo lead (idempotência real)
+        ConditionExpression: 'attribute_not_exists(pk)'
+      })
+    )
 
-    // checa duplicado (dev). Em produção, isso vira DynamoDB.
-    try {
-      const existing = await fs.readFile(file, 'utf8')
-      if (existing.includes(`"id":"${id}"`)) {
-        return NextResponse.json({ ok: true, idempotent: true }, { status: 200 })
-      }
-    } catch {
-      // arquivo não existe ainda
+    return NextResponse.json({ ok: true }, { status: 200 })
+  } catch (e: any) {
+    // se já existe, retorna ok igual ao seu comportamento antigo
+    if (e?.name === 'ConditionalCheckFailedException') {
+      return NextResponse.json({ ok: true, idempotent: true }, { status: 200 })
     }
 
-    await fs.appendFile(file, line, 'utf8')
-    return NextResponse.json({ ok: true }, { status: 200 })
-  } catch {
+    console.error(e)
     return NextResponse.json({ ok: false, error: 'falha ao salvar lead' }, { status: 500 })
   }
 }
+
+
